@@ -1,4 +1,5 @@
 import sqlite3
+
 class Customer:
     def __init__(self, ap_firstname, ap_lastname, ap_mobile, ap_email):
         self.firstname=ap_firstname
@@ -105,11 +106,75 @@ class Customer:
 
 class Appointment():
     '''Η κλάση Customer περιγράφει έναν πελατη και την μέθοδο __str__.'''
-    def __init__(self, ap_customerID, ap_date, ap_time, ap_duration=20):
-        self.customerID=ap_customerID
-        self.date=ap_date
-        self.time=ap_time
+    def __init__(self, ap_customerid, ap_datetime, ap_duration=20):
+        self.customerid=ap_customerid
+        self.datetime=ap_datetime
         self.duration=ap_duration
+
+    @classmethod
+    def create_table(cls):
+        sql = """
+            CREATE TABLE IF NOT EXISTS appointments (
+            id INTEGER PRIMARY KEY,
+            customerid INTEGER,
+            datetime TEXT,
+            duration INTEGER)
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    @classmethod
+    def drop_table(cls):
+        sql = """   
+            DROP TABLE IF EXISTS appointments;
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    def save(self):
+        sql = """
+            INSERT INTO appointments (customerid, datetime, duration)
+            VALUES (?, ?, ?)
+        """
+        CURSOR.execute(sql, (self.customerid, self.datetime, self.duration))
+        CONN.commit()
+
+        self.id = CURSOR.lastrowid
+
+    def delete(self):
+        sql = """
+            delete from appointments 
+            WHERE id=?
+        """
+        CURSOR.execute(sql,  (self.id, ))
+        CONN.commit()
+
+    @classmethod
+    def create(cls, ap_customerid, ap_datetime, ap_duration):
+        new_instance = cls(ap_customerid, ap_datetime, ap_duration)
+        new_instance.save()
+
+        return new_instance
+
+    @classmethod
+    def create_from_db(cls, table_row):
+        new_instance = cls(table_row[1], table_row[2], table_row[3])
+        new_instance.id = table_row[0]
+
+        return new_instance
+
+    @classmethod
+    def get_table_rows(cls):
+        sql = """    
+            SELECT * FROM appointments
+        """
+        table_rows = CURSOR.execute(sql).fetchall()
+
+        return [cls.create_from_db(row) for row in table_rows]
+
+    def __str__(self):
+        return "ID: "+str(self.id)+" customerID: "+str(self.customerid)+" Ημερομηνια: "+self.datetime+" Διαρκεια: "+str(self.duration)
+
 
 def menu_customer():
     while True:
@@ -135,11 +200,11 @@ def menu_customer():
 
 def customer_create():
     global customers
-    nc_firstname = input("Ονομα: ")
-    nc_lastname = input("Επωνυμο: ")
-    nc_mobile = input("Κινητο : ")
-    nc_email = input("Email: ")
-    newcustomer=Customer.create(nc_firstname,nc_lastname,nc_mobile,nc_email)
+    ap_firstname = input("Ονομα: ")
+    ap_lastname = input("Επωνυμο: ")
+    ap_mobile = input("Κινητο : ")
+    ap_email = input("Email: ")
+    newcustomer=Customer.create(ap_firstname,ap_lastname,ap_mobile,ap_email)
     print(newcustomer)
     customers.append(newcustomer)
 
@@ -151,6 +216,9 @@ def customer_modify():
     for customer in customers:
         customerIDs[customer.id]=counter
         counter=counter+1
+    if len(customers) == 0:
+        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+        return
 
     while True:
         for customer in customers:
@@ -222,6 +290,66 @@ def customer_delete():
             break
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
+def menu_appointment():
+    while True:
+        print("")
+        print("Διαχειρηση ραντεβου:")
+        print("1. Δημιουργεια ραντεβου")
+        print("2. Τροποποιηση ραντεβου")
+        print("3. Διαγραφη ραντεβου")
+        print("99. Προηγουμενο menu")
+
+        choice = input("Επιλογη: ")
+
+        if choice == '1':
+            appointment_create()
+        elif choice == '2':
+            appointment_modify()
+        elif choice == '3':
+            appointment_delete()
+        elif choice == '99':
+            break
+        else:
+            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
+def appointment_create():
+    global appointments
+    ap_customerid = input("Πελατης: ")
+    ap_date = input("Ημερα: ")
+    ap_time = input("Ωρα : ")
+    ap_duration = input("Διαρκεια: ")
+    newappointment=Appointment.create(ap_customerid,ap_date+" "+ap_time, ap_duration)
+    print(newappointment)
+    appointments.append(newappointment)
+
+def appointment_delete():
+    global appointments
+    appointmentIDs = {}
+    counter = 0
+    for appointment in appointments:
+        appointmentIDs[appointment.id] = counter
+        counter = counter + 1
+
+    while True:
+        if len(appointments) == 0:
+            print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+            break
+        for appointment in appointments:
+            print(appointment)
+        choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
+
+        if choice in appointmentIDs:
+            print("Διαγραψατε το ραντεβου: ")
+            tmp=appointments[appointmentIDs[choice]]
+            print(tmp)
+            tmp.delete()
+            appointments.pop(appointmentIDs[choice])
+        elif choice == 99:
+            break
+        else:
+            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
 def menu_main():
         while True:
             print("")
@@ -262,8 +390,11 @@ if __name__ == '__main__':
     CURSOR = CONN.cursor()
 
     #Customer.drop_table()
+    #Appointment.drop_table()
     Customer.create_table()
+    Appointment.create_table()
 
     customers = Customer.get_table_rows()
+    appointments = Appointment.get_table_rows()
 
     menu_main()
