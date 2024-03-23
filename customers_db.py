@@ -81,19 +81,19 @@ class Customer:
 
         return [cls.create_from_db(row) for row in table_rows]
 
-    def changeFirstName(self, ap_firstname):
+    def change_firstname(self, ap_firstname):
         self.firstname=ap_firstname
         self.update()
 
-    def changeLastName(self, ap_lastname):
+    def change_lastname(self, ap_lastname):
         self.lastname=ap_lastname
         self.update()
 
-    def changeMobile(self, ap_mobile):
+    def change_mobile(self, ap_mobile):
         self.mobile=ap_mobile
         self.update()
 
-    def changeEmail(self, ap_email):
+    def change_email(self, ap_email):
         self.email=ap_email
         self.update()
 
@@ -211,16 +211,18 @@ def customer_create():
 
 def customer_modify():
     global customers
+    if len(customers) == 0:
+        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+        return
     customerIDs = {}
     counter = 0
     for customer in customers:
         customerIDs[customer.id]=counter
         counter=counter+1
-    if len(customers) == 0:
-        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
-        return
 
     while True:
+        print("")
+        print("Λιστα πελατων:")
         for customer in customers:
             print(customer)
         choice = int(input("Επιλεξτε το ID του πελατη που θελετε να τροποποιησετε η 99 για επιστροφη: "))
@@ -241,19 +243,19 @@ def customer_modify():
 
                 if choice == '1':
                     tempinput = input("Νεο ονομα: ")
-                    tmp.changeFirstName(tempinput)
+                    tmp.change_firstname(tempinput)
                     print(tmp)
                 elif choice == '2':
                     tempinput = input("Νεο Επωνυμο: ")
-                    tmp.changeLastName(tempinput)
+                    tmp.change_lastname(tempinput)
                     print(tmp)
                 elif choice == '3':
                     tempinput = input("Νεο Κινητο: ")
-                    tmp.changeMobile(tempinput)
+                    tmp.change_mobile(tempinput)
                     print(tmp)
                 elif choice == '4':
                     tempinput = input("Νεο Email: ")
-                    tmp.changeEmail(tempinput)
+                    tmp.change_email(tempinput)
                     print(tmp)
                 elif choice == '99':
                     break
@@ -266,6 +268,9 @@ def customer_modify():
 
 def customer_delete():
     global customers
+    if len(customers) == 0:
+        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+        return
     customerIDs = {}
     counter = 0
     for customer in customers:
@@ -276,6 +281,8 @@ def customer_delete():
         if len(customers) == 0:
             print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
             break
+        print("")
+        print("Λιστα πελατων:")
         for customer in customers:
             print(customer)
         choice = int(input("Επιλεξτε το ID του πελατη που θελετε να διαγραψετε η 99 για επιστροφη: "))
@@ -323,8 +330,82 @@ def appointment_create():
     print(newappointment)
     appointments.append(newappointment)
 
+def appointment_modify():
+    global customers
+    global appointments
+
+    #if len(customers) == 0:
+    #    print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+    #    return
+
+    if len(appointments) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
+
+    customerIDs = {}
+    counter = 0
+    for customer in customers:
+        customerIDs[customer.id]=counter
+        counter=counter+1
+
+    appointmentIDs = {}
+    counter = 0
+    for appointment in appointments:
+        appointmentIDs[appointment.id]=counter
+        counter=counter+1
+
+
+    while True:
+        print("")
+        print("Λιστα ραντεβου:")
+        for appointment in appointments:
+            print(appointment)
+        choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
+
+        if choice in appointmentIDs:
+            print("Επιλεξατε το ραντεβου: ")
+            tmp=customers[customerIDs[choice]]
+            print(tmp)
+
+            while True:
+                print("1. Αλλαγη Πελατη")
+                print("2. Αλλαγη Ημερας")
+                print("3. Αλλαγη Ωρας")
+                print("4. Αλλαγη Διαρκειας")
+                print("99. Προηγουμενο menu")
+
+                choice = input("Επιλεξτε αλλαγη: ")
+
+                if choice == '1':
+                    tempinput = input("Νεος πελατης: ")
+                    tmp.changecustomerid(tempinput)
+                    print(tmp)
+                elif choice == '2':
+                    tempinput = input("Νεα ημερα: ")
+                    tmp.changedate(tempinput)
+                    print(tmp)
+                elif choice == '3':
+                    tempinput = input("Νεα Ωρα: ")
+                    tmp.changetime(tempinput)
+                    print(tmp)
+                elif choice == '4':
+                    tempinput = input("Νεα Διαρκεια: ")
+                    tmp.changeduration(tempinput)
+                    print(tmp)
+                elif choice == '99':
+                    break
+                else:
+                    print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+        elif choice == 99:
+            break
+        else:
+            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
 def appointment_delete():
     global appointments
+    if len(appointments) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
     appointmentIDs = {}
     counter = 0
     for appointment in appointments:
@@ -335,6 +416,8 @@ def appointment_delete():
         if len(appointments) == 0:
             print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
             break
+        print("")
+        print("Λιστα ραντεβου:")
         for appointment in appointments:
             print(appointment)
         choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
