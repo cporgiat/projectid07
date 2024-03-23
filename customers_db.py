@@ -141,6 +141,17 @@ class Appointment():
 
         self.id = CURSOR.lastrowid
 
+    def update(self):
+        sql = """
+            update appointments set
+                customerid = ?,
+                datetime = ?,
+                duration = ?
+            WHERE id = ?
+        """
+        CURSOR.execute(sql, (self.customerid, self.datetime, self.duration, self.id))
+        CONN.commit()
+
     def delete(self):
         sql = """
             delete from appointments 
@@ -171,6 +182,18 @@ class Appointment():
         table_rows = CURSOR.execute(sql).fetchall()
 
         return [cls.create_from_db(row) for row in table_rows]
+
+    def change_customerid(self, ap_customerid):
+        self.customerid=ap_customerid
+        self.update()
+
+    def change_datetime(self, ap_datetime):
+        self.datetime=ap_datetime
+        self.update()
+
+    def change_duration(self, ap_duration):
+        self.duration=ap_duration
+        self.update()
 
     def __str__(self):
         return "ID: "+str(self.id)+" customerID: "+str(self.customerid)+" Ημερομηνια: "+self.datetime+" Διαρκεια: "+str(self.duration)
@@ -268,9 +291,12 @@ def customer_modify():
 
 def customer_delete():
     global customers
+    global appointments
+
     if len(customers) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
+
     customerIDs = {}
     counter = 0
     for customer in customers:
@@ -289,10 +315,23 @@ def customer_delete():
 
         if choice in customerIDs:
             print("Διαγραψατε τον πελατη: ")
-            tmp=customers[customerIDs[choice]]
-            print(tmp)
-            tmp.delete()
+            tmpcustomer=customers[customerIDs[choice]]
+            print(tmpcustomer)
+
+            appointmentIDs = {}
+            counter = 0
+            for appointment in appointments:
+                appointmentIDs[appointment.id] = counter
+                counter = counter + 1
+
+            for appointment in appointments:
+                if appointment.customerid==tmpcustomer.id:
+                    appointment.delete()
+                    appointments.pop(appointmentIDs[appointment.id])
+
+            tmpcustomer.delete()
             customers.pop(customerIDs[choice])
+
         elif choice == 99:
             break
         else:
@@ -364,13 +403,13 @@ def appointment_modify():
 
         if choice in appointmentIDs:
             print("Επιλεξατε το ραντεβου: ")
-            tmp=customers[customerIDs[choice]]
+            tmp=appointments[appointmentIDs[choice]]
             print(tmp)
 
             while True:
                 print("1. Αλλαγη Πελατη")
-                print("2. Αλλαγη Ημερας")
-                print("3. Αλλαγη Ωρας")
+                print("2. Αλλαγη Ημεραμηνιας")
+                #print("3. Αλλαγη Ωρας")
                 print("4. Αλλαγη Διαρκειας")
                 print("99. Προηγουμενο menu")
 
@@ -378,19 +417,19 @@ def appointment_modify():
 
                 if choice == '1':
                     tempinput = input("Νεος πελατης: ")
-                    tmp.changecustomerid(tempinput)
+                    tmp.change_customerid(tempinput)
                     print(tmp)
                 elif choice == '2':
-                    tempinput = input("Νεα ημερα: ")
-                    tmp.changedate(tempinput)
+                    tempinput = input("Νεα ημεραμηνια: ")
+                    tmp.change_datetime(tempinput)
                     print(tmp)
-                elif choice == '3':
-                    tempinput = input("Νεα Ωρα: ")
-                    tmp.changetime(tempinput)
-                    print(tmp)
+                #elif choice == '3':
+                #    tempinput = input("Νεα Ωρα: ")
+                #    tmp.change_datetime(tempinput)
+                #    print(tmp)
                 elif choice == '4':
                     tempinput = input("Νεα Διαρκεια: ")
-                    tmp.changeduration(tempinput)
+                    tmp.change_duration(tempinput)
                     print(tmp)
                 elif choice == '99':
                     break
