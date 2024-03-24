@@ -222,7 +222,7 @@ def menu_customer():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 def customer_create():
-    global customers
+    customers = Customer.get_table_rows()
     ap_firstname = input("Ονομα: ")
     ap_lastname = input("Επωνυμο: ")
     ap_mobile = input("Κινητο : ")
@@ -233,10 +233,11 @@ def customer_create():
 
 
 def customer_modify():
-    global customers
+    customers = Customer.get_table_rows()
     if len(customers) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
+
     customerIDs = {}
     counter = 0
     for customer in customers:
@@ -290,12 +291,12 @@ def customer_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 def customer_delete():
-    global customers
-    global appointments
-
+    customers = Customer.get_table_rows()
     if len(customers) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
+
+    appointments = Appointment.get_table_rows()
 
     customerIDs = {}
     counter = 0
@@ -360,7 +361,13 @@ def menu_appointment():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 def appointment_create():
-    global appointments
+    customers = Customer.get_table_rows()
+    if len(customers) == 0:
+        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+        return
+
+    appointments = Appointment.get_table_rows()
+
     ap_customerid = input("Πελατης: ")
     ap_date = input("Ημερα: ")
     ap_time = input("Ωρα : ")
@@ -370,13 +377,12 @@ def appointment_create():
     appointments.append(newappointment)
 
 def appointment_modify():
-    global customers
-    global appointments
+    customers = Customer.get_table_rows()
+    if len(customers) == 0:
+        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
+        return
 
-    #if len(customers) == 0:
-    #    print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
-    #    return
-
+    appointments = Appointment.get_table_rows()
     if len(appointments) == 0:
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
@@ -441,10 +447,11 @@ def appointment_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 def appointment_delete():
-    global appointments
+    appointments = Appointment.get_table_rows()
     if len(appointments) == 0:
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
+
     appointmentIDs = {}
     counter = 0
     for appointment in appointments:
@@ -515,8 +522,5 @@ if __name__ == '__main__':
     #Appointment.drop_table()
     Customer.create_table()
     Appointment.create_table()
-
-    customers = Customer.get_table_rows()
-    appointments = Appointment.get_table_rows()
 
     menu_main()
