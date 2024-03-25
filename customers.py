@@ -113,15 +113,6 @@ class Customer:
             self.mobile) + " Email: " + self.email
 
 
-def delete_appointments_of_customerid(ap_customerid):
-    sql = """
-        delete from appointments 
-        WHERE customerid=?
-    """
-    CURSOR.execute(sql, (ap_customerid,))
-    CONN.commit()
-
-
 def no_customers():
     sql = """    
         SELECT count(1) FROM customers
@@ -139,6 +130,17 @@ def get_customer_fullname_by_id(ap_customerid):
     """
     return CURSOR.execute(sql, (ap_customerid,)).fetchall()
 
+def get_customer_id_by_email(ap_customeremail):
+    sql = """    
+        SELECT id FROM customers where email like '%?%'
+    """
+    return CURSOR.execute(sql, (ap_customeremail,)).fetchall()
+
+def get_customer_id_by_phone(ap_customerphone):
+    sql = """    
+        SELECT id FROM customers where phone like '%?%'
+    """
+    return CURSOR.execute(sql, (ap_customerphone,)).fetchall()
 
 
 def customer_create():

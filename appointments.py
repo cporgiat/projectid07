@@ -1,6 +1,7 @@
 import sqlite3
 import customers
 
+
 def create_table():
     sql = """
         CREATE TABLE IF NOT EXISTS appointments (
@@ -12,12 +13,14 @@ def create_table():
     CURSOR.execute(sql)
     CONN.commit()
 
+
 def drop_table():
     sql = """   
         DROP TABLE IF EXISTS appointments;
     """
     CURSOR.execute(sql)
     CONN.commit()
+
 
 # sqlite3 has a connect() method which accepts a .db file as a destination
 CONN = sqlite3.connect('appointments.db')
@@ -28,12 +31,14 @@ CURSOR = CONN.cursor()
 # drop_table()
 create_table()
 
+
 class Appointment():
     '''Η κλάση Customer περιγράφει έναν πελατη και την μέθοδο __str__.'''
+
     def __init__(self, ap_customerid, ap_datetime, ap_duration=20):
-        self.customerid=ap_customerid
-        self.datetime=ap_datetime
-        self.duration=ap_duration
+        self.customerid = ap_customerid
+        self.datetime = ap_datetime
+        self.duration = ap_duration
 
     def save(self):
         sql = """
@@ -61,7 +66,7 @@ class Appointment():
             delete from appointments 
             WHERE id=?
         """
-        CURSOR.execute(sql,  (self.id, ))
+        CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
     @classmethod
@@ -88,22 +93,50 @@ class Appointment():
         return [cls.create_from_db(row) for row in table_rows]
 
     def change_customerid(self, ap_customerid):
-        self.customerid=ap_customerid
+        self.customerid = ap_customerid
         self.update()
 
     def change_datetime(self, ap_datetime):
-        self.datetime=ap_datetime
+        self.datetime = ap_datetime
         self.update()
 
     def change_duration(self, ap_duration):
-        self.duration=ap_duration
+        self.duration = ap_duration
         self.update()
 
     def __str__(self):
-        return "ID: "+str(self.id)+" customerID: "+str(self.customerid)+" Ημερομηνια: "+self.datetime+" Διαρκεια: "+str(self.duration)
+        return "ID: " + str(self.id) + " customerID: " + str(
+            self.customerid) + " Ημερομηνια: " + self.datetime + " Διαρκεια: " + str(self.duration)
+
+
+def delete_appointments_of_customerid(ap_customerid):
+    sql = """
+        delete from appointments 
+        WHERE customerid=?
+    """
+    CURSOR.execute(sql, (ap_customerid,))
+    CONN.commit()
+
+
+def list_appointments_with_customer_fullname():
+    sql = """
+        select app.id,cust.firstname,cust.lastname,app.datetime,app.duration from appointments app
+        join customers cust on app.customerid=cust.id
+    """
+    table_rows=CURSOR.execute(sql).fetchall()
+    return [list(row) for row in table_rows]
+
+
+def appointment_by_id_with_customer_fullname(ap_appointmentid):
+    sql = """
+        select app.id,cust.firstname,cust.lastname,app.datetime,app.duration from appointments app
+        join customers cust on app.customerid=cust.id
+        where app.id = ?
+    """
+    return [CURSOR.execute(sql, (ap_appointmentid,)).fetchall()]
+
 
 def appointment_create():
-
     if customers.no_customers == True:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
@@ -115,8 +148,8 @@ def appointment_create():
     customerIDs = {}
     counter = 0
     for customer in customers_list:
-        customerIDs[customer.id]=counter
-        counter=counter+1
+        customerIDs[customer.id] = counter
+        counter = counter + 1
 
     while True:
         print("")
@@ -127,7 +160,7 @@ def appointment_create():
         ap_customerid = int(input("Επιλεξτε το ID του πελατη: "))
         if ap_customerid in customerIDs:
             print("Επιλεξατε τον πελατη: ")
-            tmp=customers_list[customerIDs[ap_customerid]]
+            tmp = customers_list[customerIDs[ap_customerid]]
             print(tmp)
             break
         else:
@@ -136,9 +169,11 @@ def appointment_create():
     ap_date = input("Ημερα: ")
     ap_time = input("Ωρα : ")
     ap_duration = input("Διαρκεια: ")
-    newappointment=Appointment.create(ap_customerid,ap_date+" "+ap_time, ap_duration)
+    newappointment = Appointment.create(ap_customerid, ap_date + " " + ap_time, ap_duration)
     print(newappointment)
+    print(appointment_by_id_with_customer_fullname(ap_customerid))
     appointments_list.append(newappointment)
+
 
 def appointment_modify():
     if customers.no_customers == True:
@@ -155,32 +190,35 @@ def appointment_modify():
     customerIDs = {}
     counter = 0
     for customer in customers_list:
-        customerIDs[customer.id]=counter
-        counter=counter+1
+        customerIDs[customer.id] = counter
+        counter = counter + 1
 
     appointmentIDs = {}
     counter = 0
     for appointment in appointments_list:
-        appointmentIDs[appointment.id]=counter
-        counter=counter+1
-
+        appointmentIDs[appointment.id] = counter
+        counter = counter + 1
 
     while True:
         print("")
         print("Λιστα ραντεβου:")
-        for appointment in appointments_list:
-            print(appointment)
+        #for appointment in appointments_list:
+        #    print(appointment)
+        appointments_tablerows=list_appointments_with_customer_fullname()
+        for appointment_row in appointments_tablerows:
+            print(appointment_row)
+            #print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " Ημερομηνια: " + str(appointment_row[2]) + " Διαρκεια: " + str(appointment_row[3]))
         choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
             print("Επιλεξατε το ραντεβου: ")
-            tmp=appointments_list[appointmentIDs[choice]]
+            tmp = appointments_list[appointmentIDs[choice]]
             print(tmp)
 
             while True:
                 print("1. Αλλαγη Πελατη")
                 print("2. Αλλαγη Ημεραμηνιας")
-                #print("3. Αλλαγη Ωρας")
+                # print("3. Αλλαγη Ωρας")
                 print("4. Αλλαγη Διαρκειας")
                 print("99. Προηγουμενο menu")
 
@@ -194,7 +232,7 @@ def appointment_modify():
                     tempinput = input("Νεα ημεραμηνια: ")
                     tmp.change_datetime(tempinput)
                     print(tmp)
-                #elif choice == '3':
+                # elif choice == '3':
                 #    tempinput = input("Νεα Ωρα: ")
                 #    tmp.change_datetime(tempinput)
                 #    print(tmp)
@@ -210,6 +248,7 @@ def appointment_modify():
             break
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
 
 def appointment_delete():
     appointments_list = Appointment.get_table_rows()
@@ -235,7 +274,7 @@ def appointment_delete():
 
         if choice in appointmentIDs:
             print("Διαγραψατε το ραντεβου: ")
-            tmp=appointments_list[appointmentIDs[choice]]
+            tmp = appointments_list[appointmentIDs[choice]]
             print(tmp)
             tmp.delete()
             appointments_list.pop(appointmentIDs[choice])
@@ -245,4 +284,15 @@ def appointment_delete():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 
+def appointment_search_bydate():
+    appointments_list = Appointment.get_table_rows()
+    if len(appointments_list) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
 
+
+def appointment_search_bycustomerid():
+    appointments_list = Appointment.get_table_rows()
+    if len(appointments_list) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
