@@ -109,22 +109,15 @@ class Appointment():
             self.customerid) + " Ημερομηνια: " + self.datetime + " Διαρκεια: " + str(self.duration)
 
 
-def delete_appointments_of_customerid(ap_customerid):
-    sql = """
-        delete from appointments 
-        WHERE customerid=?
-    """
-    CURSOR.execute(sql, (ap_customerid,))
-    CONN.commit()
 
 
 def list_appointments_with_customer_fullname():
     sql = """
         select app.id,cust.firstname,cust.lastname,app.datetime,app.duration from appointments app
-        join customers cust on app.customerid=cust.id
+        left join customers cust on app.customerid=cust.id
     """
-    table_rows=CURSOR.execute(sql).fetchall()
-    return [list(row) for row in table_rows]
+    table_rows = CURSOR.execute(sql).fetchall()
+    return (table_rows)
 
 
 def appointment_by_id_with_customer_fullname(ap_appointmentid):
@@ -133,7 +126,7 @@ def appointment_by_id_with_customer_fullname(ap_appointmentid):
         join customers cust on app.customerid=cust.id
         where app.id = ?
     """
-    return [CURSOR.execute(sql, (ap_appointmentid,)).fetchall()]
+    return (CURSOR.execute(sql, (ap_appointmentid,)).fetchone())
 
 
 def appointment_create():
@@ -170,8 +163,11 @@ def appointment_create():
     ap_time = input("Ωρα : ")
     ap_duration = input("Διαρκεια: ")
     newappointment = Appointment.create(ap_customerid, ap_date + " " + ap_time, ap_duration)
-    print(newappointment)
-    print(appointment_by_id_with_customer_fullname(ap_customerid))
+    # print(newappointment)
+    appointment_row = appointment_by_id_with_customer_fullname(ap_customerid)
+    # print(appointment_row)
+    print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+        appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
     appointments_list.append(newappointment)
 
 
@@ -202,12 +198,13 @@ def appointment_modify():
     while True:
         print("")
         print("Λιστα ραντεβου:")
-        #for appointment in appointments_list:
+        # for appointment in appointments_list:
         #    print(appointment)
-        appointments_tablerows=list_appointments_with_customer_fullname()
+        appointments_tablerows = list_appointments_with_customer_fullname()
         for appointment_row in appointments_tablerows:
-            print(appointment_row)
-            #print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " Ημερομηνια: " + str(appointment_row[2]) + " Διαρκεια: " + str(appointment_row[3]))
+            # print(appointment_row)
+            print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
         choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
@@ -268,8 +265,13 @@ def appointment_delete():
             break
         print("")
         print("Λιστα ραντεβου:")
-        for appointment in appointments_list:
-            print(appointment)
+        # for appointment in appointments_list:
+        #    print(appointment)
+        appointments_tablerows = list_appointments_with_customer_fullname()
+        for appointment_row in appointments_tablerows:
+            # print(appointment_row)
+            print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
         choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
