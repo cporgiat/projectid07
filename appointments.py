@@ -104,11 +104,19 @@ class Appointment():
 
 def appointment_create():
 
-    if customers.no_customers == True:
+    if customers.no_customers:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
-    appointments = Appointment.get_table_rows()
+    customers_list = customers.Customer.get_table_rows()
+
+    appointments_list = Appointment.get_table_rows()
+
+    customerIDs = {}
+    counter = 0
+    for customer in customers_list:
+        customerIDs[customer.id]=counter
+        counter=counter+1
 
     ap_customerid = input("Πελατης: ")
     ap_date = input("Ημερα: ")
@@ -116,10 +124,10 @@ def appointment_create():
     ap_duration = input("Διαρκεια: ")
     newappointment=Appointment.create(ap_customerid,ap_date+" "+ap_time, ap_duration)
     print(newappointment)
-    appointments.append(newappointment)
+    appointments_list.append(newappointment)
 
 def appointment_modify():
-    if customers.no_customers == True:
+    if customers.no_customers:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 

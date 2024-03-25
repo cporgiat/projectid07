@@ -128,37 +128,37 @@ def no_customers():
         return True
 
 def customer_create():
-    customers = Customer.get_table_rows()
+    customers_list = Customer.get_table_rows()
     ap_firstname = input("Ονομα: ")
     ap_lastname = input("Επωνυμο: ")
     ap_mobile = input("Κινητο : ")
     ap_email = input("Email: ")
     newcustomer=Customer.create(ap_firstname,ap_lastname,ap_mobile,ap_email)
     print(newcustomer)
-    customers.append(newcustomer)
+    customers_list.append(newcustomer)
 
 def customer_modify():
-    customers = Customer.get_table_rows()
-    if len(customers) == 0:
+    customers_list = Customer.get_table_rows()
+    if len(customers_list) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
     customerIDs = {}
     counter = 0
-    for customer in customers:
+    for customer in customers_list:
         customerIDs[customer.id]=counter
         counter=counter+1
 
     while True:
         print("")
         print("Λιστα πελατων:")
-        for customer in customers:
+        for customer in customers_list:
             print(customer)
         choice = int(input("Επιλεξτε το ID του πελατη που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in customerIDs:
             print("Επιλεξατε τον πελατη: ")
-            tmp=customers[customerIDs[choice]]
+            tmp=customers_list[customerIDs[choice]]
             print(tmp)
 
             while True:
@@ -196,36 +196,36 @@ def customer_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 def customer_delete():
-    customers = Customer.get_table_rows()
-    if len(customers) == 0:
+    customers_list = Customer.get_table_rows()
+    if len(customers_list) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
     customerIDs = {}
     counter = 0
-    for customer in customers:
+    for customer in customers_list:
         customerIDs[customer.id] = counter
         counter = counter + 1
 
     while True:
-        if len(customers) == 0:
+        if len(customers_list) == 0:
             print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
             break
         print("")
         print("Λιστα πελατων:")
-        for customer in customers:
+        for customer in customers_list:
             print(customer)
         choice = int(input("Επιλεξτε το ID του πελατη που θελετε να διαγραψετε η 99 για επιστροφη: "))
 
         if choice in customerIDs:
             print("Διαγραψατε τον πελατη: ")
-            tmpcustomer=customers[customerIDs[choice]]
+            tmpcustomer=customers_list[customerIDs[choice]]
             print(tmpcustomer)
 
             delete_appointments_of_customerid(choice)
 
             tmpcustomer.delete()
-            customers.pop(customerIDs[choice])
+            customers_list.pop(customerIDs[choice])
 
         elif choice == 99:
             break
