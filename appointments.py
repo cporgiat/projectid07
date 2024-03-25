@@ -104,7 +104,7 @@ class Appointment():
 
 def appointment_create():
 
-    if customers.no_customers:
+    if customers.no_customers == True:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
@@ -118,7 +118,21 @@ def appointment_create():
         customerIDs[customer.id]=counter
         counter=counter+1
 
-    ap_customerid = input("Πελατης: ")
+    while True:
+        print("")
+        print("Λιστα πελατων:")
+        for customer in customers_list:
+            print(customer)
+
+        ap_customerid = int(input("Επιλεξτε το ID του πελατη: "))
+        if ap_customerid in customerIDs:
+            print("Επιλεξατε τον πελατη: ")
+            tmp=customers_list[customerIDs[ap_customerid]]
+            print(tmp)
+            break
+        else:
+            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+
     ap_date = input("Ημερα: ")
     ap_time = input("Ωρα : ")
     ap_duration = input("Διαρκεια: ")
@@ -127,7 +141,7 @@ def appointment_create():
     appointments_list.append(newappointment)
 
 def appointment_modify():
-    if customers.no_customers:
+    if customers.no_customers == True:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 

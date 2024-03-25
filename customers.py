@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def create_table():
     sql = """
         CREATE TABLE IF NOT EXISTS customers (
@@ -20,6 +21,7 @@ def drop_table():
     CURSOR.execute(sql)
     CONN.commit()
 
+
 # sqlite3 has a connect() method which accepts a .db file as a destination
 CONN = sqlite3.connect('appointments.db')
 
@@ -29,13 +31,13 @@ CURSOR = CONN.cursor()
 # Customer.drop_table()
 create_table()
 
+
 class Customer:
     def __init__(self, ap_firstname, ap_lastname, ap_mobile, ap_email):
-        self.firstname=ap_firstname
-        self.lastname=ap_lastname
-        self.mobile=ap_mobile
-        self.email=ap_email
-
+        self.firstname = ap_firstname
+        self.lastname = ap_lastname
+        self.mobile = ap_mobile
+        self.email = ap_email
 
     def save(self):
         sql = """
@@ -64,7 +66,7 @@ class Customer:
             delete from customers 
             WHERE id=?
         """
-        CURSOR.execute(sql,  (self.id, ))
+        CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
     @classmethod
@@ -91,41 +93,53 @@ class Customer:
         return [cls.create_from_db(row) for row in table_rows]
 
     def change_firstname(self, ap_firstname):
-        self.firstname=ap_firstname
+        self.firstname = ap_firstname
         self.update()
 
     def change_lastname(self, ap_lastname):
-        self.lastname=ap_lastname
+        self.lastname = ap_lastname
         self.update()
 
     def change_mobile(self, ap_mobile):
-        self.mobile=ap_mobile
+        self.mobile = ap_mobile
         self.update()
 
     def change_email(self, ap_email):
-        self.email=ap_email
+        self.email = ap_email
         self.update()
 
     def __str__(self):
-        return "ID: "+str(self.id)+" Ονομα: "+self.firstname+" Επωνυμο: "+self.lastname+" Κινητο: "+str(self.mobile)+" Email: "+self.email
+        return "ID: " + str(self.id) + " Ονομα: " + self.firstname + " Επωνυμο: " + self.lastname + " Κινητο: " + str(
+            self.mobile) + " Email: " + self.email
+
 
 def delete_appointments_of_customerid(ap_customerid):
     sql = """
         delete from appointments 
         WHERE customerid=?
     """
-    CURSOR.execute(sql,  (ap_customerid, ))
+    CURSOR.execute(sql, (ap_customerid,))
     CONN.commit()
+
 
 def no_customers():
     sql = """    
         SELECT count(1) FROM customers
     """
     customer_count = CURSOR.execute(sql).fetchall()
-    if customer_count !=0:
+    if customer_count != 0:
         return False
     else:
         return True
+
+
+def get_customer_fullname_by_id(ap_customerid):
+    sql = """    
+        SELECT firstname+" "+lastname FROM customers where id= ?
+    """
+    return CURSOR.execute(sql, (ap_customerid,)).fetchall()
+
+
 
 def customer_create():
     customers_list = Customer.get_table_rows()
@@ -133,9 +147,10 @@ def customer_create():
     ap_lastname = input("Επωνυμο: ")
     ap_mobile = input("Κινητο : ")
     ap_email = input("Email: ")
-    newcustomer=Customer.create(ap_firstname,ap_lastname,ap_mobile,ap_email)
+    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     print(newcustomer)
     customers_list.append(newcustomer)
+
 
 def customer_modify():
     customers_list = Customer.get_table_rows()
@@ -146,8 +161,8 @@ def customer_modify():
     customerIDs = {}
     counter = 0
     for customer in customers_list:
-        customerIDs[customer.id]=counter
-        counter=counter+1
+        customerIDs[customer.id] = counter
+        counter = counter + 1
 
     while True:
         print("")
@@ -158,7 +173,7 @@ def customer_modify():
 
         if choice in customerIDs:
             print("Επιλεξατε τον πελατη: ")
-            tmp=customers_list[customerIDs[choice]]
+            tmp = customers_list[customerIDs[choice]]
             print(tmp)
 
             while True:
@@ -195,6 +210,7 @@ def customer_modify():
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
+
 def customer_delete():
     customers_list = Customer.get_table_rows()
     if len(customers_list) == 0:
@@ -219,7 +235,7 @@ def customer_delete():
 
         if choice in customerIDs:
             print("Διαγραψατε τον πελατη: ")
-            tmpcustomer=customers_list[customerIDs[choice]]
+            tmpcustomer = customers_list[customerIDs[choice]]
             print(tmpcustomer)
 
             delete_appointments_of_customerid(choice)
