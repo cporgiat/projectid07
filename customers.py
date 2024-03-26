@@ -201,18 +201,22 @@ def customer_modify():
                 if choice == '1':
                     tempinput = input("Νεο ονομα: ")
                     tmp.change_firstname(tempinput)
+                    print("")
                     print(tmp)
                 elif choice == '2':
                     tempinput = input("Νεο Επωνυμο: ")
                     tmp.change_lastname(tempinput)
+                    print("")
                     print(tmp)
                 elif choice == '3':
                     tempinput = input("Νεο Κινητο: ")
                     tmp.change_mobile(tempinput)
+                    print("")
                     print(tmp)
                 elif choice == '4':
                     tempinput = input("Νεο Email: ")
                     tmp.change_email(tempinput)
+                    print("")
                     print(tmp)
                 elif choice == '99':
                     break

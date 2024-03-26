@@ -117,7 +117,7 @@ def list_appointments_with_customer_fullname():
         left join customers cust on app.customerid=cust.id
     """
     table_rows = CURSOR.execute(sql).fetchall()
-    return (table_rows)
+    return table_rows
 
 
 def appointment_by_id_with_customer_fullname(ap_appointmentid):
@@ -126,7 +126,7 @@ def appointment_by_id_with_customer_fullname(ap_appointmentid):
         join customers cust on app.customerid=cust.id
         where app.id = ?
     """
-    return (CURSOR.execute(sql, (ap_appointmentid,)).fetchone())
+    return CURSOR.execute(sql, (ap_appointmentid,)).fetchone()
 
 
 def appointment_create():
@@ -164,8 +164,8 @@ def appointment_create():
     ap_duration = input("Διαρκεια: ")
     newappointment = Appointment.create(ap_customerid, ap_date + " " + ap_time, ap_duration)
     # print(newappointment)
-    appointment_row = appointment_by_id_with_customer_fullname(ap_customerid)
-    # print(appointment_row)
+    appointment_row = appointment_by_id_with_customer_fullname(newappointment.id)
+    #print(appointment_row)
     print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
         appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
     appointments_list.append(newappointment)
@@ -222,13 +222,35 @@ def appointment_modify():
                 choice = input("Επιλεξτε αλλαγη: ")
 
                 if choice == '1':
-                    tempinput = input("Νεος πελατης: ")
-                    tmp.change_customerid(tempinput)
-                    print(tmp)
+                    while True:
+                        print("")
+                        print("Λιστα πελατων:")
+                        for customer in customers_list:
+                            print(customer)
+
+                        ap_customerid = int(input("Επιλεξτε το ID του πελατη: "))
+                        if ap_customerid in customerIDs:
+                            print("Επιλεξατε τον πελατη: ")
+                            print(customers_list[customerIDs[ap_customerid]])
+                            break
+                        else:
+                            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+                    tmp.change_customerid(ap_customerid)
+                    print("")
+                    appointment_row = appointment_by_id_with_customer_fullname(tmp.id)
+                    # print(appointment_row)
+                    print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                        appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                        appointment_row[4]))
                 elif choice == '2':
                     tempinput = input("Νεα ημεραμηνια: ")
                     tmp.change_datetime(tempinput)
-                    print(tmp)
+                    print("")
+                    appointment_row = appointment_by_id_with_customer_fullname(tmp.id)
+                    # print(appointment_row)
+                    print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                        appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                        appointment_row[4]))
                 # elif choice == '3':
                 #    tempinput = input("Νεα Ωρα: ")
                 #    tmp.change_datetime(tempinput)
@@ -236,7 +258,12 @@ def appointment_modify():
                 elif choice == '4':
                     tempinput = input("Νεα Διαρκεια: ")
                     tmp.change_duration(tempinput)
-                    print(tmp)
+                    print("")
+                    appointment_row = appointment_by_id_with_customer_fullname(tmp.id)
+                    # print(appointment_row)
+                    print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                        appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                        appointment_row[4]))
                 elif choice == '99':
                     break
                 else:
@@ -276,8 +303,12 @@ def appointment_delete():
 
         if choice in appointmentIDs:
             print("Διαγραψατε το ραντεβου: ")
+            appointment_row = appointment_by_id_with_customer_fullname(appointments_list[appointmentIDs[choice]].id)
+            # print(appointment_row)
+            print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
+                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                appointment_row[4]))
             tmp = appointments_list[appointmentIDs[choice]]
-            print(tmp)
             tmp.delete()
             appointments_list.pop(appointmentIDs[choice])
         elif choice == 99:
