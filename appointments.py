@@ -142,10 +142,19 @@ def appointment_search_bycustomerid():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
-
+def no_appointments():
+    sql = """    
+        SELECT count(1) FROM appointments
+    """
+    apointment_count_tuple = CURSOR.execute(sql).fetchone()
+    appointment_count = int(apointment_count_tuple[0])
+    if appointment_count != 0:
+        return False
+    else:
+        return True
 
 def menu_appointment_create():
-    if customers.no_customers == True:
+    if customers.no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
@@ -187,17 +196,16 @@ def menu_appointment_create():
 
 
 def menu_appointment_modify():
-    if customers.no_customers == True:
+    if customers.no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
-    customers_list = customers.Customer.get_table_rows()
-
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
+    if no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    customers_list = customers.Customer.get_table_rows()
+    appointments_list = Appointment.get_table_rows()
     customerIDs = {}
     counter = 0
     for customer in customers_list:
@@ -290,11 +298,12 @@ def menu_appointment_modify():
 
 
 def menu_appointment_delete():
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
+
+    if no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    appointments_list = Appointment.get_table_rows()
     appointmentIDs = {}
     counter = 0
     for appointment in appointments_list:
@@ -302,7 +311,7 @@ def menu_appointment_delete():
         counter = counter + 1
 
     while True:
-        if len(appointments_list) == 0:
+        if no_appointments():
             print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
             break
         print("")

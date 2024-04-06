@@ -117,7 +117,8 @@ def no_customers():
     sql = """    
         SELECT count(1) FROM customers
     """
-    customer_count = CURSOR.execute(sql).fetchall()
+    customer_count_tuple = CURSOR.execute(sql).fetchone()
+    customer_count = int(customer_count_tuple[0])
     if customer_count != 0:
         return False
     else:
@@ -159,11 +160,11 @@ def menu_customer_create():
     ap_lastname = input("Επωνυμο: ")
     ap_mobile = input("Κινητο : ")
     ap_email = input("Email: ")
-    newcustomer=customer_create(ap_firstname,ap_lastname,ap_mobile,ap_email)
+    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     print(newcustomer)
 
 
-def customer_create(ap_firstname,ap_lastname,ap_mobile,ap_email):
+def customer_create(ap_firstname, ap_lastname, ap_mobile, ap_email):
     customers_list = Customer.get_table_rows()
     newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     customers_list.append(newcustomer)
@@ -171,11 +172,11 @@ def customer_create(ap_firstname,ap_lastname,ap_mobile,ap_email):
 
 
 def menu_customer_modify():
-    customers_list = Customer.get_table_rows()
-    if len(customers_list) == 0:
+    if no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    customers_list = Customer.get_table_rows()
     customerIDs = {}
     counter = 0
     for customer in customers_list:
@@ -234,11 +235,12 @@ def menu_customer_modify():
 
 
 def menu_customer_delete():
-    customers_list = Customer.get_table_rows()
-    if len(customers_list) == 0:
+
+    if no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    customers_list = Customer.get_table_rows()
     customerIDs = {}
     counter = 0
     for customer in customers_list:
@@ -246,7 +248,7 @@ def menu_customer_delete():
         counter = counter + 1
 
     while True:
-        if len(customers_list) == 0:
+        if no_customers():
             print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
             break
         print("")
