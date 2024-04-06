@@ -164,13 +164,6 @@ def menu_customer_create():
     print(newcustomer)
 
 
-def customer_create(ap_firstname, ap_lastname, ap_mobile, ap_email):
-    customers_list = Customer.get_table_rows()
-    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
-    customers_list.append(newcustomer)
-    return newcustomer
-
-
 def menu_customer_modify():
     if no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
