@@ -129,8 +129,32 @@ def appointment_by_id_with_customer_fullname(ap_appointmentid):
     return CURSOR.execute(sql, (ap_appointmentid,)).fetchone()
 
 
-def appointment_create():
-    if customers.no_customers == True:
+def appointment_search_bydate():
+    appointments_list = Appointment.get_table_rows()
+    if len(appointments_list) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
+
+
+def appointment_search_bycustomerid():
+    appointments_list = Appointment.get_table_rows()
+    if len(appointments_list) == 0:
+        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
+        return
+
+def no_appointments():
+    sql = """    
+        SELECT count(1) FROM appointments
+    """
+    apointment_count_tuple = CURSOR.execute(sql).fetchone()
+    appointment_count = int(apointment_count_tuple[0])
+    if appointment_count != 0:
+        return False
+    else:
+        return True
+
+def menu_appointment_create():
+    if customers.no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
@@ -171,18 +195,17 @@ def appointment_create():
     appointments_list.append(newappointment)
 
 
-def appointment_modify():
-    if customers.no_customers == True:
+def menu_appointment_modify():
+    if customers.no_customers():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
-    customers_list = customers.Customer.get_table_rows()
-
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
+    if no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    customers_list = customers.Customer.get_table_rows()
+    appointments_list = Appointment.get_table_rows()
     customerIDs = {}
     counter = 0
     for customer in customers_list:
@@ -274,12 +297,13 @@ def appointment_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 
-def appointment_delete():
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
+def menu_appointment_delete():
+
+    if no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
+    appointments_list = Appointment.get_table_rows()
     appointmentIDs = {}
     counter = 0
     for appointment in appointments_list:
@@ -287,7 +311,7 @@ def appointment_delete():
         counter = counter + 1
 
     while True:
-        if len(appointments_list) == 0:
+        if no_appointments():
             print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
             break
         print("")
@@ -315,17 +339,3 @@ def appointment_delete():
             break
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
-
-
-def appointment_search_bydate():
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
-        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
-        return
-
-
-def appointment_search_bycustomerid():
-    appointments_list = Appointment.get_table_rows()
-    if len(appointments_list) == 0:
-        print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
-        return
