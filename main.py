@@ -1,50 +1,5 @@
-import appointments
-import customers
-
-def menu_customer():
-    while True:
-        print("")
-        print("Διαχειρηση πελατων:")
-        print("1. Δημιουργεια πελατη")
-        print("2. Τροποποιηση πελατη")
-        print("3. Διαγραφη πελατη")
-        print("99. Προηγουμενο menu")
-
-        choice = input("Επιλογη: ")
-
-        if choice == '1':
-            customers.menu_customer_create()
-        elif choice == '2':
-            customers.menu_customer_modify()
-        elif choice == '3':
-            customers.menu_customer_delete()
-        elif choice == '99':
-            break
-        else:
-            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
-
-
-def menu_appointment():
-    while True:
-        print("")
-        print("Διαχειρηση ραντεβου:")
-        print("1. Δημιουργεια ραντεβου")
-        print("2. Τροποποιηση ραντεβου")
-        print("3. Διαγραφη ραντεβου")
-        print("99. Προηγουμενο menu")
-
-        choice = input("Επιλογη: ")
-
-        if choice == '1':
-            appointments.menu_appointment_create()
-        elif choice == '2':
-            appointments.menu_appointment_modify()
-        elif choice == '3':
-            appointments.menu_appointment_delete()
-        elif choice == '99':
-            break
-        else:
-            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
+import customers_menu
+import appointments_menu
 
 def menu_main():
     while True:
@@ -60,9 +15,9 @@ def menu_main():
         choice = input("Επιλογη: ")
 
         if choice == '1':
-            menu_customer()
+            customers_menu.menu_customer()
         elif choice == '2':
-            menu_appointment()
+            appointments_menu.menu_appointment()
         elif choice == '3':
             menu_search()
         elif choice == '4':
@@ -75,6 +30,6 @@ def menu_main():
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     menu_main()
