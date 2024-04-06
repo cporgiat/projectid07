@@ -13,11 +13,11 @@ def menu_customer():
         choice = input("Επιλογη: ")
 
         if choice == '1':
-            customers.customer_create()
+            customers.menu_customer_create()
         elif choice == '2':
-            customers.customer_modify()
+            customers.menu_customer_modify()
         elif choice == '3':
-            customers.customer_delete()
+            customers.menu_customer_delete()
         elif choice == '99':
             break
         else:
@@ -36,11 +36,11 @@ def menu_appointment():
         choice = input("Επιλογη: ")
 
         if choice == '1':
-            appointments.appointment_create()
+            appointments.menu_appointment_create()
         elif choice == '2':
-            appointments.appointment_modify()
+            appointments.menu_appointment_modify()
         elif choice == '3':
-            appointments.appointment_delete()
+            appointments.menu_appointment_delete()
         elif choice == '99':
             break
         else:

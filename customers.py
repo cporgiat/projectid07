@@ -154,18 +154,23 @@ def delete_appointments_of_customerid(ap_customerid):
     CONN.commit()
 
 
-def customer_create():
-    customers_list = Customer.get_table_rows()
+def menu_customer_create():
     ap_firstname = input("Ονομα: ")
     ap_lastname = input("Επωνυμο: ")
     ap_mobile = input("Κινητο : ")
     ap_email = input("Email: ")
-    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
+    newcustomer=customer_create(ap_firstname,ap_lastname,ap_mobile,ap_email)
     print(newcustomer)
+
+
+def customer_create(ap_firstname,ap_lastname,ap_mobile,ap_email):
+    customers_list = Customer.get_table_rows()
+    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     customers_list.append(newcustomer)
+    return newcustomer
 
 
-def customer_modify():
+def menu_customer_modify():
     customers_list = Customer.get_table_rows()
     if len(customers_list) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
@@ -228,7 +233,7 @@ def customer_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 
-def customer_delete():
+def menu_customer_delete():
     customers_list = Customer.get_table_rows()
     if len(customers_list) == 0:
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
