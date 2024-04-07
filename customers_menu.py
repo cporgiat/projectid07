@@ -1,4 +1,5 @@
 import customers
+import utils
 
 
 def menu_customer():
@@ -25,10 +26,10 @@ def menu_customer():
 
 
 def menu_customer_create():
-    ap_firstname = input("Ονομα: ")
-    ap_lastname = input("Επωνυμο: ")
-    ap_mobile = input("Κινητο : ")
-    ap_email = input("Email: ")
+    ap_firstname = utils.get_name("Ονομα: ")
+    ap_lastname = utils.get_name("Επωνυμο: ")
+    ap_mobile = utils.get_number("Κινητο : ")
+    ap_email = utils.get_email("Email: ")
     newcustomer = customers.Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     print(newcustomer)
 

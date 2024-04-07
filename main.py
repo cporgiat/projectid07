@@ -19,11 +19,11 @@ def menu_main():
         elif choice == '2':
             appointments_menu.menu_appointment()
         elif choice == '3':
-            menu_search()
+            search_menu.menu_search()
         elif choice == '4':
-            menu_notification()
+            notification_menu.menu_notification()
         elif choice == '5':
-            menu_printout()
+            printout_menu.menu_printout()
         elif choice == '99':
             print("Εξοδος απο το προγραμμα")
             break
