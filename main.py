@@ -10,6 +10,7 @@ def menu_main():
         print("3. Αναζητηση")
         print("4. Υπενθυμιση")
         print("5. Εκτυπωση")
+        print("98. Ρυθμισεις εφαρμογης")
         print("99. Εξοδος προγραμματος")
 
         choice = input("Επιλογη: ")
@@ -24,6 +25,8 @@ def menu_main():
             notification_menu.menu_notification()
         elif choice == '5':
             printout_menu.menu_printout()
+        elif choice == '98':
+            settings_menu.menu_settings()
         elif choice == '99':
             print("Εξοδος απο το προγραμμα")
             break
