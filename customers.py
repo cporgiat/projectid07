@@ -117,7 +117,8 @@ def no_customers():
     sql = """    
         SELECT count(1) FROM customers
     """
-    customer_count = CURSOR.execute(sql).fetchall()
+    customer_count_tuple = CURSOR.execute(sql).fetchone()
+    customer_count = int(customer_count_tuple[0])
     if customer_count != 0:
         return False
     else:
@@ -153,114 +154,3 @@ def delete_appointments_of_customerid(ap_customerid):
     CURSOR.execute(sql, (ap_customerid,))
     CONN.commit()
 
-
-def customer_create():
-    customers_list = Customer.get_table_rows()
-    ap_firstname = input("Ονομα: ")
-    ap_lastname = input("Επωνυμο: ")
-    ap_mobile = input("Κινητο : ")
-    ap_email = input("Email: ")
-    newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
-    print(newcustomer)
-    customers_list.append(newcustomer)
-
-
-def customer_modify():
-    customers_list = Customer.get_table_rows()
-    if len(customers_list) == 0:
-        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
-        return
-
-    customerIDs = {}
-    counter = 0
-    for customer in customers_list:
-        customerIDs[customer.id] = counter
-        counter = counter + 1
-
-    while True:
-        print("")
-        print("Λιστα πελατων:")
-        for customer in customers_list:
-            print(customer)
-        choice = int(input("Επιλεξτε το ID του πελατη που θελετε να τροποποιησετε η 99 για επιστροφη: "))
-
-        if choice in customerIDs:
-            print("Επιλεξατε τον πελατη: ")
-            tmp = customers_list[customerIDs[choice]]
-            print(tmp)
-
-            while True:
-                print("1. Αλλαγη Ονοματος")
-                print("2. Αλλαγη Επωνυμου")
-                print("3. Αλλαγη Κινητου")
-                print("4. Αλλαγη Email")
-                print("99. Προηγουμενο menu")
-
-                choice = input("Επιλεξτε αλλαγη: ")
-
-                if choice == '1':
-                    tempinput = input("Νεο ονομα: ")
-                    tmp.change_firstname(tempinput)
-                    print("")
-                    print(tmp)
-                elif choice == '2':
-                    tempinput = input("Νεο Επωνυμο: ")
-                    tmp.change_lastname(tempinput)
-                    print("")
-                    print(tmp)
-                elif choice == '3':
-                    tempinput = input("Νεο Κινητο: ")
-                    tmp.change_mobile(tempinput)
-                    print("")
-                    print(tmp)
-                elif choice == '4':
-                    tempinput = input("Νεο Email: ")
-                    tmp.change_email(tempinput)
-                    print("")
-                    print(tmp)
-                elif choice == '99':
-                    break
-                else:
-                    print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
-        elif choice == 99:
-            break
-        else:
-            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
-
-
-def customer_delete():
-    customers_list = Customer.get_table_rows()
-    if len(customers_list) == 0:
-        print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
-        return
-
-    customerIDs = {}
-    counter = 0
-    for customer in customers_list:
-        customerIDs[customer.id] = counter
-        counter = counter + 1
-
-    while True:
-        if len(customers_list) == 0:
-            print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
-            break
-        print("")
-        print("Λιστα πελατων:")
-        for customer in customers_list:
-            print(customer)
-        choice = int(input("Επιλεξτε το ID του πελατη που θελετε να διαγραψετε η 99 για επιστροφη: "))
-
-        if choice in customerIDs:
-            print("Διαγραψατε τον πελατη: ")
-            tmpcustomer = customers_list[customerIDs[choice]]
-            print(tmpcustomer)
-
-            delete_appointments_of_customerid(choice)
-
-            tmpcustomer.delete()
-            customers_list.pop(customerIDs[choice])
-
-        elif choice == 99:
-            break
-        else:
-            print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
