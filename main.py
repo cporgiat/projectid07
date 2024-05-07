@@ -22,7 +22,7 @@ def menu_main():
         elif choice == '2':
             appointments_menu.menu_appointment()
         elif choice == '3':
-            search_menu.menu_search()
+            search_menu.search_menu()
         elif choice == '4':
             mail_menu.menu_mail()
         elif choice == '5':
