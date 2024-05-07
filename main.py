@@ -1,7 +1,7 @@
 import appointments_menu
 import customers_menu
 import search_menu
-
+from reminder import send_appointment_reminder
 
 def menu_main():
     while True:
@@ -24,7 +24,8 @@ def menu_main():
         elif choice == '3':
             search_menu.search_menu()
         elif choice == '4':
-            mail_menu.menu_mail()
+            date = input("Εισάγετε την ημερομηνία για την οποία θέλετε να στείλετε υπενθυμίσεις (YYYY-MM-DD): ")
+            send_appointment_reminder(date)
         elif choice == '5':
             printout_menu.menu_printout()
         elif choice == '98':
