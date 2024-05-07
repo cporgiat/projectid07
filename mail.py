@@ -3,6 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
 # Σύνδεση με τη βάση δεδομένων
 conn = sqlite3.connect('appointments.db')
 cursor = conn.cursor()

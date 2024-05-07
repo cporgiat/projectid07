@@ -1,5 +1,7 @@
-import customers_menu
 import appointments_menu
+import customers_menu
+import search_menu
+
 
 def menu_main():
     while True:
@@ -22,7 +24,7 @@ def menu_main():
         elif choice == '3':
             search_menu.menu_search()
         elif choice == '4':
-            notification_menu.menu_notification()
+            mail_menu.menu_mail()
         elif choice == '5':
             printout_menu.menu_printout()
         elif choice == '98':
