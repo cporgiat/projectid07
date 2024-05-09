@@ -3,6 +3,7 @@ import customers
 import appointments
 import utils
 
+
 def menu_appointment():
     while True:
         print("")
@@ -56,13 +57,22 @@ def menu_appointment_create():
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
-    ap_datetime = utils.get_datetime("Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
+    while True:
+        ap_datetime = utils.get_datetime(
+            "Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
+        if utils.validate_future_datetime(ap_datetime):
+            break
+        else:
+            confirm = utils.get_number(
+                "H ημερομηνα/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε: ")
+            if confirm == "1":
+                break
 
     ap_duration = utils.get_number("Διαρκεια: ")
     newappointment = appointments.Appointment.create(ap_customerid, ap_datetime, ap_duration)
     # print(newappointment)
     appointment_row = appointments.appointment_by_id_with_customer_fullname(newappointment.id)
-    #print(appointment_row)
+    # print(appointment_row)
     print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
         appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
     appointments_list.append(newappointment)
@@ -100,7 +110,8 @@ def menu_appointment_modify():
         for appointment_row in appointments_tablerows:
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
-                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
+                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                appointment_row[4]))
         choice = int(utils.get_number("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
@@ -139,8 +150,17 @@ def menu_appointment_modify():
                         appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
                         appointment_row[4]))
                 elif choice == '2':
-                    tempinput = utils.get_datetime("Νεα ημεραμηνια/ωρα: ")
-                    tmp.change_datetime(tempinput)
+                    while True:
+                        ap_datetime = utils.get_datetime(
+                            "Νεα Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
+                        if utils.validate_future_datetime(ap_datetime):
+                            break
+                        else:
+                            confirm = utils.get_number(
+                                "H ημερομηνα/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε: ")
+                            if confirm == "1":
+                                break
+                    tmp.change_datetime(ap_datetime)
                     print("")
                     appointment_row = appointments.appointment_by_id_with_customer_fullname(tmp.id)
                     # print(appointment_row)
@@ -171,7 +191,6 @@ def menu_appointment_modify():
 
 
 def menu_appointment_delete():
-
     if appointments.no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
@@ -195,12 +214,14 @@ def menu_appointment_delete():
         for appointment_row in appointments_tablerows:
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
-                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
+                appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
+                appointment_row[4]))
         choice = int(utils.get_number("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
             print("Διαγραψατε το ραντεβου: ")
-            appointment_row = appointments.appointment_by_id_with_customer_fullname(appointments_list[appointmentIDs[choice]].id)
+            appointment_row = appointments.appointment_by_id_with_customer_fullname(
+                appointments_list[appointmentIDs[choice]].id)
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
                 appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(

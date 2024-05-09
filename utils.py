@@ -31,6 +31,17 @@ def validate_input_datetime(ap_text):
         return False
 
 
+def validate_future_datetime(ap_text):
+    try:
+        checkdate = datetime.strptime(ap_text, "%Y-%m-%d %H:%M")
+        if (checkdate > datetime.now()):
+            return True
+        else:
+            return False
+    except ValueError:
+        return False
+
+
 def get_name(ap_text):
     while (True):
         ap_input = input(ap_text)
@@ -74,5 +85,3 @@ def get_datetime(ap_text):
             print("Μη σωστη ημερομηνια. Παρακαλω εισαγετε ημερομηνια στην μορφη ΥΥΥΥ-ΜΜ-DD HH:MI. Δοκιμαστε παλι.")
 
     return ap_input
-
-
