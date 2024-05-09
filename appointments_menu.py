@@ -12,7 +12,7 @@ def menu_appointment():
         print("3. Διαγραφη ραντεβου")
         print("99. Προηγουμενο menu")
 
-        choice = input("Επιλογη: ")
+        choice = utils.get_number("Επιλογη: ")
 
         if choice == '1':
             menu_appointment_create()
@@ -47,7 +47,7 @@ def menu_appointment_create():
         for customer in customers_list:
             print(customer)
 
-        ap_customerid = int(input("Επιλεξτε το ID του πελατη: "))
+        ap_customerid = int(utils.get_number("Επιλεξτε το ID του πελατη: "))
         if ap_customerid in customerIDs:
             print("Επιλεξατε τον πελατη: ")
             tmp = customers_list[customerIDs[ap_customerid]]
@@ -101,7 +101,7 @@ def menu_appointment_modify():
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
                 appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
-        choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
+        choice = int(utils.get_number("Επιλεξτε το ID του ραντεβου που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
             print("Επιλεξατε το ραντεβου: ")
@@ -110,12 +110,12 @@ def menu_appointment_modify():
 
             while True:
                 print("1. Αλλαγη Πελατη")
-                print("2. Αλλαγη Ημεραμηνιας")
+                print("2. Αλλαγη Ημεραμηνιας/Ωρας")
                 # print("3. Αλλαγη Ωρας")
                 print("4. Αλλαγη Διαρκειας")
                 print("99. Προηγουμενο menu")
 
-                choice = input("Επιλεξτε αλλαγη: ")
+                choice = utils.get_number("Επιλεξτε αλλαγη: ")
 
                 if choice == '1':
                     while True:
@@ -124,7 +124,7 @@ def menu_appointment_modify():
                         for customer in customers_list:
                             print(customer)
 
-                        ap_customerid = int(input("Επιλεξτε το ID του πελατη: "))
+                        ap_customerid = int(utils.get_number("Επιλεξτε το ID του πελατη: "))
                         if ap_customerid in customerIDs:
                             print("Επιλεξατε τον πελατη: ")
                             print(customers_list[customerIDs[ap_customerid]])
@@ -139,7 +139,7 @@ def menu_appointment_modify():
                         appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
                         appointment_row[4]))
                 elif choice == '2':
-                    tempinput = input("Νεα ημεραμηνια: ")
+                    tempinput = utils.get_datetime("Νεα ημεραμηνια/ωρα: ")
                     tmp.change_datetime(tempinput)
                     print("")
                     appointment_row = appointments.appointment_by_id_with_customer_fullname(tmp.id)
@@ -152,7 +152,7 @@ def menu_appointment_modify():
                 #    tmp.change_datetime(tempinput)
                 #    print(tmp)
                 elif choice == '4':
-                    tempinput = input("Νεα Διαρκεια: ")
+                    tempinput = utils.get_number("Νεα Διαρκεια: ")
                     tmp.change_duration(tempinput)
                     print("")
                     appointment_row = appointments.appointment_by_id_with_customer_fullname(tmp.id)
@@ -196,7 +196,7 @@ def menu_appointment_delete():
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
                 appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(appointment_row[4]))
-        choice = int(input("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
+        choice = int(utils.get_number("Επιλεξτε το ID του ραντεβου που θελετε να διαγραψετε η 99 για επιστροφη: "))
 
         if choice in appointmentIDs:
             print("Διαγραψατε το ραντεβου: ")

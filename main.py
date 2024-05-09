@@ -2,6 +2,7 @@ import appointments_menu
 import customers_menu
 import search_menu
 import print_menu
+from utils import get_number
 from reminder import send_appointment_reminder
 
 def menu_main():
@@ -16,7 +17,7 @@ def menu_main():
         print("98. Ρυθμισεις εφαρμογης")
         print("99. Εξοδος προγραμματος")
 
-        choice = input("Επιλογη: ")
+        choice = get_number("Επιλογη: ")
 
         if choice == '1':
             customers_menu.menu_customer()
