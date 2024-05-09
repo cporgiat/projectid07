@@ -169,13 +169,13 @@ def menu_appointment_modify():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 
-def menu_appointment_delete():
+def menu_appointment_delete(): 
 
     if appointments.no_appointments():
         print("Δεν υπαρχουν ραντεβου. Επιστροφη στο προηγουμενο μενου.")
         return
 
-    appointments_list = appointments.Appointment.get_table_rows()
+    appointments_list = appointments.Appointment.get_table_rows() #use for gui
     appointmentIDs = {}
     counter = 0
     for appointment in appointments_list:
@@ -190,7 +190,7 @@ def menu_appointment_delete():
         print("Λιστα ραντεβου:")
         # for appointment in appointments_list:
         #    print(appointment)
-        appointments_tablerows = appointments.list_appointments_with_customer_fullname()
+        appointments_tablerows = appointments.list_appointments_with_customer_fullname()  #use for gui
         for appointment_row in appointments_tablerows:
             # print(appointment_row)
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
@@ -204,8 +204,8 @@ def menu_appointment_delete():
             print("ID: " + str(appointment_row[0]) + " Full Name: " + str(appointment_row[1]) + " " + str(
                 appointment_row[2]) + " Ημερομηνια: " + str(appointment_row[3]) + " Διαρκεια: " + str(
                 appointment_row[4]))
-            tmp = appointments_list[appointmentIDs[choice]]
-            tmp.delete()
+            tmp = appointments_list[appointmentIDs[choice]] #use for gui
+            tmp.delete() #use for gui
             appointments_list.pop(appointmentIDs[choice])
         elif choice == 99:
             break

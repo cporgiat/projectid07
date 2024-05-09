@@ -25,11 +25,11 @@ def menu_customer():
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
 
-def menu_customer_create():
-    ap_firstname = utils.get_name("Ονομα: ")
-    ap_lastname = utils.get_name("Επωνυμο: ")
-    ap_mobile = utils.get_number("Κινητο : ")
-    ap_email = utils.get_email("Email: ")
+def menu_customer_create(Name,LastName,Phone,Email):
+    ap_firstname = Name
+    ap_lastname = LastName
+    ap_mobile = Phone
+    ap_email = Email
     newcustomer = customers.Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     print(newcustomer)
 
@@ -102,7 +102,7 @@ def menu_customer_delete():
         print("Δεν υπαρχουν πελατες. Επιστροφη στο προηγουμενο μενου.")
         return
 
-    customers_list = customers.Customer.get_table_rows()
+    customers_list = customers.Customer.get_table_rows()  #use for gui
     customerIDs = {}
     counter = 0
     for customer in customers_list:
@@ -121,12 +121,12 @@ def menu_customer_delete():
 
         if choice in customerIDs:
             print("Διαγραψατε τον πελατη: ")
-            tmpcustomer = customers_list[customerIDs[choice]]
+            tmpcustomer = customers_list[customerIDs[choice]] #use for gui
             print(tmpcustomer)
 
-            customers.delete_appointments_of_customerid(choice)
+            customers.delete_appointments_of_customerid(choice) #use for gui
 
-            tmpcustomer.delete()
+            tmpcustomer.delete()  #use for gui
             customers_list.pop(customerIDs[choice])
 
         elif choice == 99:
