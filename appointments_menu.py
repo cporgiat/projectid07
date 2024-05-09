@@ -1,6 +1,7 @@
 import sqlite3
 import customers
 import appointments
+import utils
 
 def menu_appointment():
     while True:
@@ -55,10 +56,10 @@ def menu_appointment_create():
         else:
             print("Λαθος επιλογη. Παρακαλω επιλεξτε παλι.")
 
-    ap_date = input("Ημερα: ")
-    ap_time = input("Ωρα : ")
-    ap_duration = input("Διαρκεια: ")
-    newappointment = appointments.Appointment.create(ap_customerid, ap_date + " " + ap_time, ap_duration)
+    ap_datetime = utils.get_datetime("Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
+
+    ap_duration = utils.get_number("Διαρκεια: ")
+    newappointment = appointments.Appointment.create(ap_customerid, ap_datetime, ap_duration)
     # print(newappointment)
     appointment_row = appointments.appointment_by_id_with_customer_fullname(newappointment.id)
     #print(appointment_row)

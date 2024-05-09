@@ -1,7 +1,8 @@
-import tkinter as tk
-import search
-import customers_menu_gui
 import appointments_menu
+import customers_menu
+import search_menu
+import print_menu
+from reminder import send_appointment_reminder
 
 def change_frame(old_content, old_title):
     # Destroy old content and display new content
