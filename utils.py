@@ -64,6 +64,16 @@ def get_number(ap_text):
     return ap_input
 
 
+def get_phone(ap_text):
+    while (True):
+        ap_input = input(ap_text)
+        if (validate_input_only_numbers(ap_input) and len(ap_input)==9):
+            break
+        else:
+            print("Λαθος μορφη τηλεφωνου. Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι χωρις κενα. Δοκιμαστε παλι.")
+
+    return ap_input
+
 def get_email(ap_text):
     while (True):
         ap_input = input(ap_text)
@@ -71,7 +81,7 @@ def get_email(ap_text):
             break
         else:
             print(
-                "Μη σωστο email. Παρακαλω χρησιμοποιηστε μονο πεζους Λατινικους χαρακτηρες χωρις κενα. Δοκιμαστε παλι.")
+                "Λαθος μορφη email. Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα. Δοκιμαστε παλι.")
 
     return ap_input
 
@@ -82,7 +92,7 @@ def get_datetime(ap_text):
         if (validate_input_datetime(ap_input)):
             break
         else:
-            print("Μη σωστη ημερομηνια. Παρακαλω εισαγετε ημερομηνια στην μορφη ΥΥΥΥ-ΜΜ-DD HH:MI. Δοκιμαστε παλι.")
+            print("Λαθος μορφη ημερομηνιας. Παρακαλω εισαγετε ημερομηνια στην μορφη ΥΥΥΥ-ΜΜ-DD HH:MI. Δοκιμαστε παλι.")
 
     return ap_input
 

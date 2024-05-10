@@ -28,7 +28,7 @@ def menu_customer():
 def menu_customer_create():
     ap_firstname = utils.get_name("Ονομα: ")
     ap_lastname = utils.get_name("Επωνυμο: ")
-    ap_mobile = utils.get_number("Κινητο : ")
+    ap_mobile = utils.get_phone("Κινητο : ")
     ap_email = utils.get_email("Email: ")
     newcustomer = customers.Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
     print(newcustomer)
@@ -78,7 +78,7 @@ def menu_customer_modify():
                     print("")
                     print(tmp)
                 elif choice == '3':
-                    tempinput = utils.get_number("Νεο Κινητο: ")
+                    tempinput = utils.get_phone("Νεο Κινητο: ")
                     tmp.change_mobile(tempinput)
                     print("")
                     print(tmp)
