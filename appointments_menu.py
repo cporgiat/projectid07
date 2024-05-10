@@ -1,4 +1,3 @@
-import sqlite3
 import customers
 import appointments
 import utils
