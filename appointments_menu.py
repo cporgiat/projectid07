@@ -61,14 +61,18 @@ def menu_appointment_create():
         ap_datetime = utils.get_datetime(
             "Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
         if utils.validate_future_datetime(ap_datetime):
-            break
+            ap_duration = utils.get_duration("Διαρκεια σε λεπτα ή πατηστε το enter για προκαθoρισμενη διαρκεια 30 λεπτων: ")
+            if appointments.no_overlapping_appointments(ap_datetime, ap_duration):
+                break
+            else:
+                print("Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας που βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου. Δοκιμαστε ξανα.")
         else:
             confirm = utils.get_number(
-                "H ημερομηνα/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε: ")
+                "H ημερομηνια/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε ή οτιδηποτε αλλο για να ακυρωσετε: ")
             if confirm == "1":
                 break
 
-    ap_duration = utils.get_number("Διαρκεια: ")
+
     newappointment = appointments.Appointment.create(ap_customerid, ap_datetime, ap_duration)
     # print(newappointment)
     appointment_row = appointments.appointment_by_id_with_customer_fullname(newappointment.id)
@@ -154,10 +158,15 @@ def menu_appointment_modify():
                         ap_datetime = utils.get_datetime(
                             "Νεα Ημερομηνια/Ωρα σε μορφη <Ετος>-<Μηνας>-<Ημερα> <Ωρα>:<Λεπτα> : ")
                         if utils.validate_future_datetime(ap_datetime):
-                            break
+                            ap_duration = utils.get_duration("Διαρκεια σε λεπτα ή πατηστε το enter για προκαθoρισμενη διαρκεια 30 λεπτων: ")
+                            if appointments.no_overlapping_appointments(ap_datetime, ap_duration):
+                                break
+                            else:
+                                print(
+                                    "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας που βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου. Δοκιμαστε ξανα.")
                         else:
                             confirm = utils.get_number(
-                                "H ημερομηνα/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε: ")
+                                "H ημερομηνια/ωρα που βαλατε ειναι στο παρελθον. Πατηστε 1 για να προχωρησετε ή οτιδηποτε αλλο για να ακυρωσετε: ")
                             if confirm == "1":
                                 break
                     tmp.change_datetime(ap_datetime)
