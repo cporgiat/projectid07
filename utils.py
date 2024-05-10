@@ -85,3 +85,17 @@ def get_datetime(ap_text):
             print("Μη σωστη ημερομηνια. Παρακαλω εισαγετε ημερομηνια στην μορφη ΥΥΥΥ-ΜΜ-DD HH:MI. Δοκιμαστε παλι.")
 
     return ap_input
+
+
+def get_duration(ap_text):
+    while (True):
+        ap_input = input(ap_text)
+        if ap_input == "":
+            ap_input = '30'
+
+        if (validate_input_only_numbers(ap_input)):
+            break
+        else:
+            print("Παρακαλω χρησιμοποιηστε μονο αριθμους χωρις κενα. Δοκιμαστε παλι.")
+
+    return ap_input
