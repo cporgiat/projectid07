@@ -11,7 +11,7 @@ def menu_customer():
         print("3. Διαγραφη πελατη")
         print("99. Προηγουμενο menu")
 
-        choice = input("Επιλογη: ")
+        choice = utils.get_number("Επιλογη: ")
 
         if choice == '1':
             menu_customer_create()
@@ -51,7 +51,7 @@ def menu_customer_modify():
         print("Λιστα πελατων:")
         for customer in customers_list:
             print(customer)
-        choice = int(input("Επιλεξτε το ID του πελατη που θελετε να τροποποιησετε η 99 για επιστροφη: "))
+        choice = int(utils.get_number("Επιλεξτε το ID του πελατη που θελετε να τροποποιησετε η 99 για επιστροφη: "))
 
         if choice in customerIDs:
             print("Επιλεξατε τον πελατη: ")
@@ -65,25 +65,25 @@ def menu_customer_modify():
                 print("4. Αλλαγη Email")
                 print("99. Προηγουμενο menu")
 
-                choice = input("Επιλεξτε αλλαγη: ")
+                choice = utils.get_number("Επιλεξτε αλλαγη: ")
 
                 if choice == '1':
-                    tempinput = input("Νεο ονομα: ")
+                    tempinput = utils.get_name("Νεο ονομα: ")
                     tmp.change_firstname(tempinput)
                     print("")
                     print(tmp)
                 elif choice == '2':
-                    tempinput = input("Νεο Επωνυμο: ")
+                    tempinput = utils.get_name("Νεο Επωνυμο: ")
                     tmp.change_lastname(tempinput)
                     print("")
                     print(tmp)
                 elif choice == '3':
-                    tempinput = input("Νεο Κινητο: ")
+                    tempinput = utils.get_number("Νεο Κινητο: ")
                     tmp.change_mobile(tempinput)
                     print("")
                     print(tmp)
                 elif choice == '4':
-                    tempinput = input("Νεο Email: ")
+                    tempinput = utils.get_email("Νεο Email: ")
                     tmp.change_email(tempinput)
                     print("")
                     print(tmp)
@@ -117,7 +117,7 @@ def menu_customer_delete():
         print("Λιστα πελατων:")
         for customer in customers_list:
             print(customer)
-        choice = int(input("Επιλεξτε το ID του πελατη που θελετε να διαγραψετε η 99 για επιστροφη: "))
+        choice = int(utils.get_number("Επιλεξτε το ID του πελατη που θελετε να διαγραψετε η 99 για επιστροφη: "))
 
         if choice in customerIDs:
             print("Διαγραψατε τον πελατη: ")
