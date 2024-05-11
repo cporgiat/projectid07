@@ -47,10 +47,23 @@ if __name__ == '__main__':
     from calendar import month_name
     from datetime import datetime
 
-
-    def new_customer_clicked(event=None):
+    def clear_content_frame():
         for widget in content_frame.winfo_children():
             widget.destroy()
+
+    def new_customer_clicked(event=None):
+        clear_content_frame()
+
+        def retrieve_input():
+            from customers import Customer
+            ap_firstname = textbox_firstname.get("1.0","end-1c")
+            ap_lastname = textbox_lastname.get("1.0","end-1c")
+            ap_mobile = textbox_phone.get("1.0","end-1c")
+            ap_email = textbox_email.get("1.0","end-1c")
+            newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
+            clear_content_frame()
+            label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχως.\n"+str(newcustomer))
+            label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
         label = ttk.Label(content_frame, text="Ονομα:")
@@ -77,12 +90,51 @@ if __name__ == '__main__':
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Δημιουργια")
+        ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
 
+
+
     def modify_customer_clicked(event=None):
-        for widget in content_frame.winfo_children():
-            widget.destroy()
+        clear_content_frame()
+
+        from customers import Customer
+        customers_list = Customer.get_table_rows()
+
+        customerIDs = {}
+        counter = 0
+        for customer in customers_list:
+            customerIDs[counter] = customer.id
+            counter = counter + 1
+
+        def retrieve_input():
+            customer_cb_selected_index = customer_cb.current()
+
+            ap_firstname = textbox_firstname.get("1.0","end-1c")
+            ap_lastname = textbox_lastname.get("1.0","end-1c")
+            ap_mobile = textbox_phone.get("1.0","end-1c")
+            ap_email = textbox_email.get("1.0","end-1c")
+
+            tmpcustomer = customers_list[customer_cb_selected_index]
+            tmpcustomer.change_firstname(ap_firstname)
+            tmpcustomer.change_lastname(ap_lastname)
+            tmpcustomer.change_mobile(ap_mobile)
+            tmpcustomer.change_email(ap_email)
+            clear_content_frame()
+            label = ttk.Label(content_frame, text="Ο πελατης ενημερωθηκε επιτυχως.\n"+str(tmpcustomer))
+            label.pack(fill=tk.X, padx=5, pady=5)
+
+        def display_customer_info():
+            customer_cb_selected_index = customer_cb.current()
+            tmpcustomer = customers_list[customer_cb_selected_index]
+            textbox_firstname.delete("1.0","end-1c")
+            textbox_firstname.insert("end-1c", tmpcustomer.firstname)
+            textbox_lastname.delete("1.0","end-1c")
+            textbox_lastname.insert("end-1c", tmpcustomer.lastname)
+            textbox_phone.delete("1.0","end-1c")
+            textbox_phone.insert("end-1c", tmpcustomer.mobile)
+            textbox_email.delete("1.0","end-1c")
+            textbox_email.insert("end-1c", tmpcustomer.email)
 
         # # label
         label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
@@ -92,16 +144,15 @@ if __name__ == '__main__':
         selected_customer = tk.StringVar()
         customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
 
-        from customers import Customer
-        customers_list = Customer.get_table_rows()
-
-        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+        customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
         # prevent typing a value
         customer_cb['state'] = 'readonly'
 
         # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
+
+        customer_cb.bind("<<ComboboxSelected>>", lambda _: display_customer_info())
 
         # label
         label = ttk.Label(content_frame, text="Ονομα:")
@@ -128,12 +179,29 @@ if __name__ == '__main__':
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Ενημερωση")
+        ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
 
     def delete_customer_clicked(event=None):
-        for widget in content_frame.winfo_children():
-            widget.destroy()
+        clear_content_frame()
+
+        def retrieve_input():
+            customer_cb_selected_index = customer_cb.current()
+
+            customerIDs = {}
+            counter = 0
+            for customer in customers_list:
+                customerIDs[counter] = customer.id
+                counter = counter + 1
+
+            from customers import delete_appointments_of_customerid
+            delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
+            tmpcustomer = customers_list[customer_cb_selected_index]
+            tmpcustomer.delete()
+
+            clear_content_frame()
+            label = ttk.Label(content_frame, text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customerIDs[customer_cb_selected_index]))
+            label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
         label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
@@ -146,7 +214,7 @@ if __name__ == '__main__':
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+        customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
         # prevent typing a value
         customer_cb['state'] = 'readonly'
@@ -154,12 +222,11 @@ if __name__ == '__main__':
         # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Διαγραφη")
+        ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
 
     def new_appointment_clicked(event=None):
-        for widget in content_frame.winfo_children():
-            widget.destroy()
+        clear_content_frame()
 
         # label
         label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
@@ -172,7 +239,7 @@ if __name__ == '__main__':
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+        customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
         # prevent typing a value
         customer_cb['state'] = 'readonly'
@@ -205,8 +272,7 @@ if __name__ == '__main__':
 
 
     def modify_appointment_clicked(event=None):
-        for widget in content_frame.winfo_children():
-            widget.destroy()
+        clear_content_frame()
 
         # label
         label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
@@ -219,7 +285,7 @@ if __name__ == '__main__':
         from appointments import list_appointments_with_customer_fullname
         appointments_tablerows = list_appointments_with_customer_fullname()
 
-        appointment_cb['values'] = [appointments_tablerows[m] for m in range(0, 10)]
+        appointment_cb['values'] = [appointments_tablerows[m] for m in range(len(appointments_tablerows))]
 
         # prevent typing a value
         appointment_cb['state'] = 'readonly'
@@ -234,18 +300,18 @@ if __name__ == '__main__':
 
         # create a combobox
         selected_customer = tk.StringVar()
-        appointment_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
+        customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        appointment_cb['values'] = [customers_list[m] for m in range(0, 10)]
+        customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
         # prevent typing a value
-        appointment_cb['state'] = 'readonly'
+        customer_cb['state'] = 'readonly'
 
         # place the widget
-        appointment_cb.pack(fill=tk.X, padx=5, pady=5)
+        customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
         label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
@@ -272,8 +338,7 @@ if __name__ == '__main__':
 
 
     def delete_appointment_clicked(event=None):
-        for widget in content_frame.winfo_children():
-            widget.destroy()
+        clear_content_frame()
 
         # label
         label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
@@ -286,7 +351,7 @@ if __name__ == '__main__':
         from appointments import list_appointments_with_customer_fullname
         appointments_tablerows = list_appointments_with_customer_fullname()
 
-        appointment_cb['values'] = [appointments_tablerows[m] for m in range(0, 10)]
+        appointment_cb['values'] = [appointments_tablerows[m] for m in range(len(appointments_tablerows))]
 
         # prevent typing a value
         appointment_cb['state'] = 'readonly'
