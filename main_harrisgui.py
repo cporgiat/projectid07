@@ -49,7 +49,6 @@ if __name__ == '__main__':
 
 
     def new_customer_clicked(event=None):
-        print("new_customer_clicked was clicked!")
         for widget in content_frame.winfo_children():
             widget.destroy()
 
@@ -81,13 +80,108 @@ if __name__ == '__main__':
         ok_btn = tk.Button(content_frame, text="Δημιουργια")
         ok_btn.pack()
 
-    def new_appointment_clicked(event=None):
-        print("new_appointment_clicked was clicked!")
+    def modify_customer_clicked(event=None):
+        for widget in content_frame.winfo_children():
+            widget.destroy()
+
+        # # label
+        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_customer = tk.StringVar()
+        customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
+
+        from customers import Customer
+        customers_list = Customer.get_table_rows()
+
+        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        customer_cb['state'] = 'readonly'
+
+        # place the widget
+        customer_cb.pack(fill=tk.X, padx=5, pady=5)
+
+        # label
+        label = ttk.Label(content_frame, text="Ονομα:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        textbox_firstname = tk.Text(content_frame, height=1, width=10)
+        textbox_firstname.pack(fill=tk.X, padx=5, pady=5)
+
+        label = ttk.Label(content_frame, text="Επωνυμο:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        textbox_lastname = tk.Text(content_frame, height=1, width=10)
+        textbox_lastname.pack(fill=tk.X, padx=5, pady=5)
+
+        label = ttk.Label(content_frame, text="Τηλεφωνο:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        textbox_phone = tk.Text(content_frame, height=1, width=10)
+        textbox_phone.pack(fill=tk.X, padx=5, pady=5)
+
+        label = ttk.Label(content_frame, text="Email:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        textbox_email = tk.Text(content_frame, height=1, width=10)
+        textbox_email.pack(fill=tk.X, padx=5, pady=5)
+
+        ok_btn = tk.Button(content_frame, text="Ενημερωση")
+        ok_btn.pack()
+
+    def delete_customer_clicked(event=None):
         for widget in content_frame.winfo_children():
             widget.destroy()
 
         # label
-        label = ttk.Label(content_frame, text="Please select date:")
+        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_customer = tk.StringVar()
+        customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
+
+        from customers import Customer
+        customers_list = Customer.get_table_rows()
+
+        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        customer_cb['state'] = 'readonly'
+
+        # place the widget
+        customer_cb.pack(fill=tk.X, padx=5, pady=5)
+
+        ok_btn = tk.Button(content_frame, text="Διαγραφη")
+        ok_btn.pack()
+
+    def new_appointment_clicked(event=None):
+        for widget in content_frame.winfo_children():
+            widget.destroy()
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_customer = tk.StringVar()
+        customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
+
+        from customers import Customer
+        customers_list = Customer.get_table_rows()
+
+        customer_cb['values'] = [customers_list[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        customer_cb['state'] = 'readonly'
+
+        # place the widget
+        customer_cb.pack(fill=tk.X, padx=5, pady=5)
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         from tkcalendar import DateEntry
@@ -98,7 +192,7 @@ if __name__ == '__main__':
         cal.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Please select time:")
+        label = ttk.Label(content_frame, text="Επιλεξτε Ωρα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         from tktimepicker import SpinTimePickerOld, constants
@@ -109,22 +203,101 @@ if __name__ == '__main__':
         ok_btn = tk.Button(content_frame, text="Δημιουργια")
         ok_btn.pack()
 
-        # # label
-        # label = ttk.Label(content_frame, text="Please select month:")
-        # label.pack(fill=tk.X, padx=5, pady=5)
-        #
-        # # create a combobox
-        # selected_month = tk.StringVar()
-        # month_cb = ttk.Combobox(content_frame, textvariable=selected_month)
-        #
-        # # get first 3 letters of every month name
-        # month_cb['values'] = [month_name[m][0:3] for m in range(1, 13)]
-        #
-        # # prevent typing a value
-        # month_cb['state'] = 'readonly'
-        #
-        # # place the widget
-        # month_cb.pack(fill=tk.X, padx=5, pady=5)
+
+    def modify_appointment_clicked(event=None):
+        for widget in content_frame.winfo_children():
+            widget.destroy()
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_appointment = tk.StringVar()
+        appointment_cb = ttk.Combobox(content_frame, textvariable=selected_appointment)
+
+        from appointments import list_appointments_with_customer_fullname
+        appointments_tablerows = list_appointments_with_customer_fullname()
+
+        appointment_cb['values'] = [appointments_tablerows[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        appointment_cb['state'] = 'readonly'
+
+        # place the widget
+        appointment_cb.pack(fill=tk.X, padx=5, pady=5)
+
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_customer = tk.StringVar()
+        appointment_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
+
+        from customers import Customer
+        customers_list = Customer.get_table_rows()
+
+        appointment_cb['values'] = [customers_list[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        appointment_cb['state'] = 'readonly'
+
+        # place the widget
+        appointment_cb.pack(fill=tk.X, padx=5, pady=5)
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        from tkcalendar import DateEntry
+        cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
+                        width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
+                        borderwidth=2)
+
+        cal.pack(fill=tk.X, padx=5, pady=5)
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε Ωρα:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        from tktimepicker import SpinTimePickerOld, constants
+        time_picker = SpinTimePickerOld(content_frame)
+        time_picker.addAll(constants.HOURS24)
+        time_picker.pack(fill=tk.X, padx=5, pady=5)
+
+        ok_btn = tk.Button(content_frame, text="Ενημερωση")
+        ok_btn.pack()
+
+
+    def delete_appointment_clicked(event=None):
+        for widget in content_frame.winfo_children():
+            widget.destroy()
+
+        # label
+        label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+
+        # create a combobox
+        selected_appointment = tk.StringVar()
+        appointment_cb = ttk.Combobox(content_frame, textvariable=selected_appointment)
+
+        from appointments import list_appointments_with_customer_fullname
+        appointments_tablerows = list_appointments_with_customer_fullname()
+
+        appointment_cb['values'] = [appointments_tablerows[m] for m in range(0, 10)]
+
+        # prevent typing a value
+        appointment_cb['state'] = 'readonly'
+
+        # place the widget
+        appointment_cb.pack(fill=tk.X, padx=5, pady=5)
+
+
+        ok_btn = tk.Button(content_frame, text="Διαγραφη")
+        ok_btn.pack()
+
 
     def new_file_clicked():
         print("placeholder")
@@ -132,7 +305,7 @@ if __name__ == '__main__':
 
     root = tk.Tk()
     root.title("Διαχειρηση Ραντεβου - Project07")
-    root.geometry("400x300")
+    root.geometry("700x500")
     menubar = tk.Menu()
 
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
@@ -160,12 +333,12 @@ if __name__ == '__main__':
     )
     tk_customers_menu.add_command(
         label="Τροποποιηση",
-        command=new_file_clicked,
+        command=modify_customer_clicked,
         compound=tk.LEFT
     )
     tk_customers_menu.add_command(
         label="Διαγραφη",
-        command=new_file_clicked,
+        command=delete_customer_clicked,
         compound=tk.LEFT
     )
 
@@ -177,12 +350,12 @@ if __name__ == '__main__':
     )
     tk_appointments_menu.add_command(
         label="Τροποποιηση",
-        command=new_file_clicked,
+        command=modify_appointment_clicked,
         compound=tk.LEFT
     )
     tk_appointments_menu.add_command(
         label="Διαγραφη",
-        command=new_file_clicked,
+        command=delete_appointment_clicked,
         compound=tk.LEFT
     )
 
