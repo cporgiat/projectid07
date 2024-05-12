@@ -151,8 +151,8 @@ def main_menu(previous_window=None):
     window.title("Διαχείρηση Ραντεβού")
     window.geometry("800x600")
 
-    label_menu = tk.Label(window, text="Μενού Αναζήτησης", font=("Helvetica", 16))
-    label_menu.pack(pady=10)
+    label_menu = tk.Label(window, text="Μενού Αναζήτησης", font=("Helvetica", 22))
+    label_menu.pack(pady=20)
 
     button_search_date = tk.Button(window, text="Αναζήτηση με Ημερομηνία", font=("Helvetica", 12),
                                     command=lambda: search_by_date_gui(window))
@@ -166,7 +166,7 @@ def main_menu(previous_window=None):
 
 
     button_exit = tk.Button(window, text="Επιστροφή στο Κύριο Μενού", font=("Helvetica", 12), command=window.quit)
-    button_exit.pack(pady=5)
+    button_exit.pack(pady=20)
 
     logo_photo = load_logo(scale_factor=0.5)  # Φορτώνουμε το λογότυπο
     if logo_photo:
