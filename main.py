@@ -1,6 +1,6 @@
 import appointments_menu
 import customers_menu
-import search_menu
+import search_menu_gui
 import print_menu
 from reminder import send_appointment_reminder
 
@@ -23,7 +23,7 @@ def menu_main():
         elif choice == '2':
             appointments_menu.menu_appointment()
         elif choice == '3':
-            search_menu.search_menu()
+            search_menu_gui.main_menu()
         elif choice == '4':
             date = input("Εισάγετε την ημερομηνία για την οποία θέλετε να στείλετε υπενθυμίσεις (YYYY-MM-DD): ")
             send_appointment_reminder(date)
