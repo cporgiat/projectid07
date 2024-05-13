@@ -2,10 +2,12 @@ import appointments_menu
 import customers_menu
 import search_menu
 import print_menu
+from tkcalendar import DateEntry
+from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
+from tkinter import messagebox
 from utils import get_number
 from reminder import send_appointment_reminder
-
-
+#from ctypes import     
 if __name__ == '__main__':
     import tkinter as tk
     from tkinter import ttk
@@ -13,6 +15,14 @@ if __name__ == '__main__':
     from calendar import month_name
     from datetime import datetime
 
+    def load_logo(scale_factor=0.5):
+     try:
+        logo = tk.PhotoImage(file="Logo.png")
+        logo = logo.subsample(int(1.5/scale_factor))  # Κλιμάκωση του λογότυπου
+        return logo
+     except tk.TclError as e:
+        messagebox.showerror("Error", f"Failed to load logo: {e}")
+        return None
 
     def clear_content_frame():
         for widget in content_frame.winfo_children():
@@ -545,9 +555,106 @@ if __name__ == '__main__':
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
 
+    def search_by_date_gui():
+     def search_and_show_results():
+        date = cal.get_date()
+        if date:
+            formatted_date = date.strftime('YYYY-MM-DD')
+            results = search_by_date(formatted_date)
+            if results:
+                root.destroy()
+                show_results_window(results)
+            else:
+                messagebox.showinfo("No Results", "No results found.")
+              
+     clear_content_frame()
+
+     label_date = tk.Label(content_frame, text="Παρακαλω επιλεξτε Ημερομηνία:")
+     label_date.pack(padx=5,pady=5)
+     cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+     cal.pack(fill=tk.X, padx=5, pady=5)
+
+     button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
+     button_search.pack(pady=5)
+
+    # button_return = tk.Button(content_frame, text="Επιστροφή στο Μενού Αναζήτησης", command=lambda: return_to_main_menu(main_menu, content_frame))
+    # button_return.pack(pady=5)
+
+
+    def search_by_email_gui():
+      clear_content_frame()
+      def search_and_show_results():
+        email = entry_email.get()
+        if email:
+            results = search_by_customer_email(email)
+            if results:
+                content_frame.destroy()
+                show_results_window(results)
+            else:
+                messagebox.showinfo("No Results", "Δεν βρέθηκαν αποτελέσματα.")
+ 
+      label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
+      label_email.pack(padx=5,pady=5)
+      entry_email = tk.Entry(content_frame)
+      entry_email.pack(fill=tk.X, padx=5, pady=5)
+
+      button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
+      button_search.pack(pady=5)
+
+      #button_return = tk.Button(content_frame, text="Επιστροφή στο Μενού Αναζήτησης", command=lambda: return_to_main_menu(main_menu, content_frame))
+      #button_return.pack(pady=5)
+
+      
+
+    def show_results_window(results):
+      def export_to_excel_window():
+        def export():
+            filename = entry_filename.get()
+            if filename:
+                export_to_excel(results, filename + ".xlsx")
+                content_frame.destroy()
+
+        content_frame = tk.Tk()
+        content_frame.title("Εξαγωγή σε Excel")
+
+        label_filename = tk.Label(content_frame, text="Πληκτολογείστε το ονομα αρχείου Excel (χωρις κατάληξη):")
+        label_filename.pack()
+
+        entry_filename = tk.Entry(content_frame)
+        entry_filename.pack()
+
+        button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
+        button_export.pack()   
+    
+      content_frame.title("Αποτελέσματα Αναζήτησης")
+
+      headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια")
+
+      frame = tk.Frame(content_frame)
+      frame.pack(padx=10, pady=10)
+
+      # Προσθήκη κεφαλίδων
+      for col, header in enumerate(headers):
+        label_header = tk.Label(frame, text=header, font=("Helvetica", 10, "bold"), padx=10, pady=5, relief=tk.RIDGE)
+        label_header.grid(row=0, column=col, sticky="nsew")
+
+      # Εμφάνιση δεδομένων
+      for row, result in enumerate(results, start=1):
+        # Εμφάνιση ID
+        label_id = tk.Label(frame, text=result[0], padx=10, pady=5, relief=tk.RIDGE)
+        label_id.grid(row=row, column=0, sticky="nsew")
+
+        # Εμφάνιση υπολοίπων δεδομένων
+        for col, data in enumerate(result[1:], start=1):
+            label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
+            label_data.grid(row=row, column=col, sticky="nsew")
+
+      button_export_excel = tk.Button(content_frame, text="Εξαγωγή σε Excel", command=export_to_excel_window)
+      button_export_excel.pack(pady=5)
+    
 
     def new_file_clicked():
-        print("placeholder")
+         print("placeholder")
 
 
     root = tk.Tk()
@@ -558,17 +665,12 @@ if __name__ == '__main__':
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
     tk_search_by_date.add_command(
         label="Με Ημερομηνια",
-        command=new_file_clicked,
+        command=search_by_date_gui,
         compound=tk.LEFT
     )
     tk_search_by_date.add_command(
         label="Με email",
-        command=new_file_clicked,
-        compound=tk.LEFT
-    )
-    tk_search_by_date.add_command(
-        label="Με τηλεφωνο",
-        command=new_file_clicked,
+        command=search_by_email_gui,
         compound=tk.LEFT
     )
 
@@ -630,9 +732,20 @@ if __name__ == '__main__':
     menubar.add_cascade(menu=tk_appointments_menu, label="Ραντεβου")
     menubar.add_cascade(menu=tk_settings_menu, label="Ρυθμισεις")
 
-    root.config(menu=menubar)
+    root.config(menu=menubar,bg= "#282830")
 
-    content_frame = tk.Frame(root)  # , bg="orange")
+    icon = tk.PhotoImage(file="WindowLogo.png")
+    root.iconphoto(True, icon)
+    root.title("Διαχείρηση Ραντεβού")
+
+
+    content_frame = tk.Frame(root,bg= "#282830")  # , bg="orange")
     content_frame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.LEFT)
+  
+    logo_photo = load_logo(scale_factor=0.5)  # Φορτώνουμε το λογότυπο
+    if logo_photo:
+        label_logo = tk.Label(root, image=logo_photo,bg= "#282830")
+        label_logo.pack(side=tk.BOTTOM)
+
 
     root.mainloop()
