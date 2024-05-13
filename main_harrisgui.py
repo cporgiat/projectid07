@@ -9,8 +9,7 @@ from reminder import send_appointment_reminder
 if __name__ == '__main__':
     import tkinter as tk
     from tkinter import ttk
-
-    from calendar import month_name
+    from tkinter import messagebox
     from datetime import datetime
 
 
@@ -24,10 +23,36 @@ if __name__ == '__main__':
 
         def retrieve_input():
             from customers import Customer
+            from utils import validate_input_email, validate_input_only_letters, validate_input_only_numbers
             ap_firstname = textbox_firstname.get("1.0", "end-1c")
             ap_lastname = textbox_lastname.get("1.0", "end-1c")
             ap_mobile = textbox_phone.get("1.0", "end-1c")
             ap_email = textbox_email.get("1.0", "end-1c")
+
+            if(not validate_input_only_letters(ap_firstname)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Ονομα χρησιμοποιηστε μονο\n "
+                                                "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if(not validate_input_only_letters(ap_lastname)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επωνυμο χρησιμοποιηστε μονο\n"
+                                                "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==9)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
+                                                "Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if(not validate_input_email(ap_email)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη email. "
+                                                "Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
+
             newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
             clear_content_frame()
             label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχως.\n" + str(newcustomer))
@@ -60,6 +85,8 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def modify_customer_clicked(event=None):
@@ -75,12 +102,39 @@ if __name__ == '__main__':
             counter = counter + 1
 
         def retrieve_input():
+            from utils import validate_input_email, validate_input_only_letters, validate_input_only_numbers
             customer_cb_selected_index = customer_cb.current()
+            if(customer_cb_selected_index == -1):
+                return
 
             ap_firstname = textbox_firstname.get("1.0", "end-1c")
             ap_lastname = textbox_lastname.get("1.0", "end-1c")
             ap_mobile = textbox_phone.get("1.0", "end-1c")
             ap_email = textbox_email.get("1.0", "end-1c")
+
+            if(not validate_input_only_letters(ap_firstname)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Ονομα χρησιμοποιηστε μονο\n "
+                                                "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if(not validate_input_only_letters(ap_lastname)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επωνυμο χρησιμοποιηστε μονο\n"
+                                                "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==9)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
+                                                "Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι."
+                                                "Δοκιμαστε παλι.")
+                return
+
+            if(not validate_input_email(ap_email)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη email. "
+                                                "Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
+                                                "Δοκιμαστε παλι.")
+                return
 
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.change_firstname(ap_firstname)
@@ -148,6 +202,8 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def delete_customer_clicked(event=None):
@@ -158,6 +214,14 @@ if __name__ == '__main__':
 
         def retrieve_input():
             customer_cb_selected_index = customer_cb.current()
+            if(customer_cb_selected_index == -1):
+                return
+
+            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε τον πελατη\n\n"
+                                         +str(customers_list[customer_cb_selected_index])+
+                                         "\n\nΘα διαγραφουν μαζι και ολα του τα ραντεβου."
+                                         "\nΕιστε σιγουροι;")):
+                return
 
             customerIDs = {}
             counter = 0
@@ -172,7 +236,7 @@ if __name__ == '__main__':
 
             clear_content_frame()
             label = ttk.Label(content_frame,
-                              text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customerIDs[customer_cb_selected_index]))
+                              text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customers_list[customer_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
@@ -191,8 +255,11 @@ if __name__ == '__main__':
         # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
+
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def new_appointment_clicked(event=None):
@@ -202,8 +269,12 @@ if __name__ == '__main__':
         customers_list = Customer.get_table_rows()
 
         def retrieve_input():
+            customer_cb_selected_index = customer_cb.current()
+            if(customer_cb_selected_index == -1):
+                return
+
             from customers import Customer
-            from appointments import Appointment
+            from appointments import Appointment, no_overlapping_appointments
 
             customerIDs = {}
             counter = 0
@@ -211,12 +282,19 @@ if __name__ == '__main__':
                 customerIDs[counter] = customer.id
                 counter = counter + 1
 
-            ap_customerid = customerIDs[customer_cb.current()]
+            ap_customerid = customerIDs[customer_cb_selected_index]
             ap_datetime = str(cal.get()) + ' ' + str(hour_cb.get()) + ':' + str(minutes_cb.get())
             ap_duration = duration_cb.get()
             # print(ap_customerid)
             # print(ap_datetime)
             # print(ap_duration)
+
+            if(not no_overlapping_appointments(ap_datetime, ap_duration)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
+                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου."
+                                            "\nΔοκιμαστε παλι.")
+                return
+
             newappointment = Appointment.create(ap_customerid, ap_datetime, ap_duration)
             clear_content_frame()
             label = ttk.Label(content_frame, text="Το ραντεβου δημιουργηθηκε επιτυχως.\n" + str(newappointment))
@@ -254,21 +332,19 @@ if __name__ == '__main__':
         label.pack(fill=tk.X, padx=5, pady=5)
 
         hour_cb = ttk.Combobox(content_frame)
-
-        hour_cb['values'] = [*range(0, 24)]
+        hours_list = [*range(0, 24)]
+        hour_cb['values'] = [str(element).rjust(2,'0') for element in hours_list]
 
         hour_cb.current(datetime.now().hour)
-
         # prevent typing a value
         hour_cb['state'] = 'readonly'
-
         # place the widget
         hour_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
         minutes_cb = ttk.Combobox(content_frame)
-
-        minutes_cb['values'] = [*range(0, 60)]
+        minites_int_list = [*range(0, 60)]
+        minutes_cb['values'] = [str(element).rjust(2,'0') for element in minites_int_list]
 
         minutes_cb.current(datetime.now().minute)
 
@@ -297,6 +373,8 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def modify_appointment_clicked(event=None):
@@ -305,11 +383,15 @@ if __name__ == '__main__':
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        from appointments import list_appointments_with_customer_fullname, Appointment
+        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
 
         def retrieve_input():
+            appointment_cb_selected_index = appointment_cb.current()
+            if(appointment_cb_selected_index == -1):
+                return
+
             from customers import Customer
             from appointments import Appointment
 
@@ -318,8 +400,6 @@ if __name__ == '__main__':
             for customer in customers_list:
                 customerIDs[counter] = customer.id
                 counter = counter + 1
-
-            appointment_cb_selected_index = appointment_cb.current()
 
             appointmentIDs = {}
             counter = 0
@@ -333,6 +413,12 @@ if __name__ == '__main__':
             # print(ap_customerid)
             # print(ap_datetime)
             # print(ap_duration)
+
+            if(not no_overlapping_appointments(ap_datetime, ap_duration)):
+                tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
+                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου."
+                                            "\nΔοκιμαστε παλι.")
+                return
 
             tmpappointment = appointments_list[appointment_cb_selected_index]
             # print(tmpappointment)
@@ -455,8 +541,8 @@ if __name__ == '__main__':
         label.pack(fill=tk.X, padx=5, pady=5)
 
         hour_cb = ttk.Combobox(content_frame)
-
-        hour_cb['values'] = [*range(0, 24)]
+        hours_list = [*range(0, 24)]
+        hour_cb['values'] = [str(element).rjust(2,'0') for element in hours_list]
 
         hour_cb.current(datetime.now().hour)
 
@@ -468,9 +554,8 @@ if __name__ == '__main__':
 
         # label
         minutes_cb = ttk.Combobox(content_frame)
-
-        minutes_cb['values'] = [*range(0, 60)]
-
+        minites_int_list = [*range(0, 60)]
+        minutes_cb['values'] = [str(element).rjust(2,'0') for element in minites_int_list]
         minutes_cb.current(datetime.now().minute)
 
         # prevent typing a value
@@ -500,6 +585,8 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def delete_appointment_clicked(event=None):
@@ -512,6 +599,13 @@ if __name__ == '__main__':
 
         def retrieve_input():
             appointment_cb_selected_index = appointment_cb.current()
+            if(appointment_cb_selected_index == -1):
+                return
+
+            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε το ραντεβου\n\n"
+                                         +str(appointments_list[appointment_cb_selected_index])+
+                                         "\n\nΕιστε σιγουροι;")):
+                return
 
             counter = 0
             for appointment in appointments_list:
@@ -544,6 +638,8 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn.pack()
 
 
     def new_file_clicked():
