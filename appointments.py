@@ -108,8 +108,6 @@ class Appointment():
             self.customerid) + " Ημερομηνια: " + self.datetime + " Διαρκεια: " + str(self.duration)
 
 
-
-
 def list_appointments_with_customer_fullname():
     sql = """
         select app.id,cust.firstname,cust.lastname,app.datetime,app.duration from appointments app
@@ -147,3 +145,24 @@ def no_appointments():
     else:
         return True
 
+
+def no_overlapping_appointments(ap_datetime, ap_duration):
+    sql = """
+        with ids as (
+            select id FROM appointments app 
+                where datetime(app.datetime) <= datetime( ? )
+                and datetime(app.datetime,'+'||app.duration||' minutes') >= datetime( ? )
+            union
+            select id FROM appointments app 
+                where datetime(app.datetime) <= datetime( ? ,'+'||?||' minutes')
+                and datetime(app.datetime,'+'||app.duration||' minutes') >= datetime( ? ,'+'||?||' minutes')
+        )
+        select count(1) from ids
+    """
+    overlapping_appointments_count_tuple = CURSOR.execute(sql, (ap_datetime, ap_datetime, ap_datetime, ap_duration, ap_datetime, ap_duration)).fetchone()
+    overlapping_appointments_count = int(overlapping_appointments_count_tuple[0])
+
+    if overlapping_appointments_count != 0:
+        return False
+    else:
+        return True
