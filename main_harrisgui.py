@@ -7,8 +7,9 @@ from search import search_by_date, search_by_customer_email, print_results, expo
 from tkinter import messagebox
 from utils import get_number
 from reminder import send_appointment_reminder
-#from ctypes import     
+  
 if __name__ == '__main__':
+    import customtkinter
     import tkinter as tk
     from tkinter import ttk
     from tkinter import messagebox
@@ -23,13 +24,13 @@ if __name__ == '__main__':
         messagebox.showerror("Error", f"Failed to load logo: {e}")
         return None
 
-    def clear_content_frame():
-        for widget in content_frame.winfo_children():
+    def clear_content_frame(frame):
+        for widget in frame.winfo_children():
             widget.destroy()
 
 
     def new_customer_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         def retrieve_input():
             from customers import Customer
@@ -64,7 +65,7 @@ if __name__ == '__main__':
                 return
 
             newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχως.\n" + str(newcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -95,12 +96,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
 
     def modify_customer_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -151,7 +152,7 @@ if __name__ == '__main__':
             tmpcustomer.change_lastname(ap_lastname)
             tmpcustomer.change_mobile(ap_mobile)
             tmpcustomer.change_email(ap_email)
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Ο πελατης ενημερωθηκε επιτυχως.\n" + str(tmpcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -212,12 +213,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
 
     def delete_customer_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -244,7 +245,7 @@ if __name__ == '__main__':
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.delete()
 
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame,
                               text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customers_list[customer_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
@@ -268,12 +269,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
 
     def new_appointment_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -306,7 +307,7 @@ if __name__ == '__main__':
                 return
 
             newappointment = Appointment.create(ap_customerid, ap_datetime, ap_duration)
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Το ραντεβου δημιουργηθηκε επιτυχως.\n" + str(newappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -383,12 +384,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
 
     def modify_appointment_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -437,7 +438,7 @@ if __name__ == '__main__':
             tmpappointment.change_duration(ap_duration)
             # print(tmpappointment)
 
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Το ραντεβου ενημερωθηκε επιτυχως.\n" + str(tmpappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -595,12 +596,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
 
     def delete_appointment_clicked(event=None):
-        clear_content_frame()
+        clear_content_frame(content_frame)
 
         from appointments import list_appointments_with_customer_fullname, Appointment
         appointments_tablerows = list_appointments_with_customer_fullname()
@@ -625,7 +626,7 @@ if __name__ == '__main__':
             tmpappointment = appointments_list[appointment_cb_selected_index]
             tmpappointment.delete()
 
-            clear_content_frame()
+            clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Το ραντεβου διαγραφηκε επιτυχως.\n" + str(
                 appointments_list[appointment_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
@@ -648,7 +649,7 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.pack()
 
     def search_by_date_gui():
@@ -663,7 +664,7 @@ if __name__ == '__main__':
             else:
                 messagebox.showinfo("No Results", "No results found.")
               
-     clear_content_frame()
+     clear_content_frame(content_frame)
 
      label_date = tk.Label(content_frame, text="Παρακαλω επιλεξτε Ημερομηνία:")
      label_date.pack(padx=5,pady=5)
@@ -678,13 +679,12 @@ if __name__ == '__main__':
 
 
     def search_by_email_gui():
-      clear_content_frame()
+      clear_content_frame(content_frame)
       def search_and_show_results():
         email = entry_email.get()
         if email:
             results = search_by_customer_email(email)
             if results:
-                content_frame.destroy()
                 show_results_window(results)
             else:
                 messagebox.showinfo("No Results", "Δεν βρέθηκαν αποτελέσματα.")
@@ -708,11 +708,8 @@ if __name__ == '__main__':
             filename = entry_filename.get()
             if filename:
                 export_to_excel(results, filename + ".xlsx")
-                content_frame.destroy()
-
-        content_frame = tk.Tk()
-        content_frame.title("Εξαγωγή σε Excel")
-
+                
+                
         label_filename = tk.Label(content_frame, text="Πληκτολογείστε το ονομα αρχείου Excel (χωρις κατάληξη):")
         label_filename.pack()
 
@@ -722,12 +719,13 @@ if __name__ == '__main__':
         button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
         button_export.pack()   
     
-      content_frame.title("Αποτελέσματα Αναζήτησης")
-
       headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια")
 
-      frame = tk.Frame(content_frame)
-      frame.pack(padx=10, pady=10)
+      frame = customtkinter.CTkScrollableFrame(content_frame)
+      frame.pack(padx=10, pady=10,fill=tk.BOTH, expand=True)
+
+      frame.config(width=815)
+
 
       # Προσθήκη κεφαλίδων
       for col, header in enumerate(headers):
@@ -736,14 +734,14 @@ if __name__ == '__main__':
 
       # Εμφάνιση δεδομένων
       for row, result in enumerate(results, start=1):
-        # Εμφάνιση ID
-        label_id = tk.Label(frame, text=result[0], padx=10, pady=5, relief=tk.RIDGE)
-        label_id.grid(row=row, column=0, sticky="nsew")
+         # Εμφάνιση ID
+         label_id = tk.Label(frame, text=result[0], padx=10, pady=5, relief=tk.RIDGE)
+         label_id.grid(row=row, column=0, sticky="nsew")
 
-        # Εμφάνιση υπολοίπων δεδομένων
-        for col, data in enumerate(result[1:], start=1):
-            label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
-            label_data.grid(row=row, column=col, sticky="nsew")
+         # Εμφάνιση υπολοίπων δεδομένων
+         for col, data in enumerate(result[1:], start=1):
+             label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
+             label_data.grid(row=row, column=col, sticky="nsew")
 
       button_export_excel = tk.Button(content_frame, text="Εξαγωγή σε Excel", command=export_to_excel_window)
       button_export_excel.pack(pady=5)
@@ -755,7 +753,7 @@ if __name__ == '__main__':
 
     root = tk.Tk()
     root.title("Διαχειρηση Ραντεβου - Project07")
-    root.geometry("700x500")
+    root.geometry("815x630")
     menubar = tk.Menu()
 
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
