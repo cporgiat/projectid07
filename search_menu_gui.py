@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkcalendar import DateEntry
 from search import search_by_date, search_by_customer_email, print_results, export_to_excel
-
+from datetime import datetime
 def load_logo(scale_factor=0.5):
     try:
         logo = tk.PhotoImage(file="Logo.png")
@@ -16,10 +16,10 @@ def return_to_main_menu(main_menu_function, window):
     main_menu_function(window)
 def search_by_date_gui(main_window):
     def search_and_show_results():
-        date = cal.get_date()
+        date = cal.get()
         if date:
-            formatted_date = date.strftime('YYYY-MM-DD')
-            results = search_by_date(formatted_date)
+            results = search_by_date(date)
+            print (results)
             if results:
                 window.destroy()
                 show_results_window(results)
@@ -34,7 +34,9 @@ def search_by_date_gui(main_window):
     window.title("Αναζήτηση με Ημερομηνία")
     label_date = tk.Label(window, text="Παρακαλω επιλεξτε Ημερομηνία:")
     label_date.pack()
-    cal = DateEntry(window, width=12, background='darkblue', foreground='white', borderwidth=2)
+    cal = DateEntry(window, locale='en_US', date_pattern='YYYY-mm-dd',
+                    width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
+                    borderwidth=2)
     cal.pack(pady=10)
 
     button_search = tk.Button(window, text="Αναζήτηση", command=search_and_show_results)
