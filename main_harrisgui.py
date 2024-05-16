@@ -656,10 +656,9 @@ if __name__ == '__main__':
      def search_and_show_results():
         date = cal.get_date()
         if date:
-            formatted_date = date.strftime('YYYY-MM-DD')
-            results = search_by_date(formatted_date)
+            #formatted_date = date.strftime('YYYY-MM-DD')
+            results = search_by_date(date)
             if results:
-                root.destroy()
                 show_results_window(results)
             else:
                 messagebox.showinfo("No Results", "No results found.")
@@ -668,7 +667,7 @@ if __name__ == '__main__':
 
      label_date = tk.Label(content_frame, text="Παρακαλω επιλεξτε Ημερομηνία:")
      label_date.pack(padx=5,pady=5)
-     cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+     cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
      cal.pack(fill=tk.X, padx=5, pady=5)
 
      button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
