@@ -540,7 +540,6 @@ if __name__ == '__main__':
         label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        from tkcalendar import DateEntry
         cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                         width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
                         borderwidth=2)
