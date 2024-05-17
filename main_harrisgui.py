@@ -2,35 +2,24 @@ import appointments_menu
 import customers_menu
 import search_menu
 import print_menu
-from tkcalendar import DateEntry
-from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
-from tkinter import messagebox
 from utils import get_number
 from reminder import send_appointment_reminder
-  
+
+
 if __name__ == '__main__':
-    import customtkinter
     import tkinter as tk
     from tkinter import ttk
     from tkinter import messagebox
     from datetime import datetime
 
-    def load_logo(scale_factor=0.5):
-     try:
-        logo = tk.PhotoImage(file="Logo.png")
-        logo = logo.subsample(int(1.5/scale_factor))  # Κλιμάκωση του λογότυπου
-        return logo
-     except tk.TclError as e:
-        messagebox.showerror("Error", f"Failed to load logo: {e}")
-        return None
 
-    def clear_content_frame(frame):
-        for widget in frame.winfo_children():
+    def clear_content_frame():
+        for widget in content_frame.winfo_children():
             widget.destroy()
 
 
     def new_customer_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         def retrieve_input():
             from customers import Customer
@@ -65,7 +54,7 @@ if __name__ == '__main__':
                 return
 
             newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχως.\n" + str(newcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -96,12 +85,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
 
     def modify_customer_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -152,7 +141,7 @@ if __name__ == '__main__':
             tmpcustomer.change_lastname(ap_lastname)
             tmpcustomer.change_mobile(ap_mobile)
             tmpcustomer.change_email(ap_email)
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame, text="Ο πελατης ενημερωθηκε επιτυχως.\n" + str(tmpcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -213,12 +202,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
 
     def delete_customer_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -245,7 +234,7 @@ if __name__ == '__main__':
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.delete()
 
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame,
                               text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customers_list[customer_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
@@ -269,12 +258,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
 
     def new_appointment_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -307,7 +296,7 @@ if __name__ == '__main__':
                 return
 
             newappointment = Appointment.create(ap_customerid, ap_datetime, ap_duration)
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame, text="Το ραντεβου δημιουργηθηκε επιτυχως.\n" + str(newappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -384,12 +373,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
 
     def modify_appointment_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         from customers import Customer
         customers_list = Customer.get_table_rows()
@@ -438,7 +427,7 @@ if __name__ == '__main__':
             tmpappointment.change_duration(ap_duration)
             # print(tmpappointment)
 
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame, text="Το ραντεβου ενημερωθηκε επιτυχως.\n" + str(tmpappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -540,6 +529,7 @@ if __name__ == '__main__':
         label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
+        from tkcalendar import DateEntry
         cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                         width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
                         borderwidth=2)
@@ -595,12 +585,12 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
 
     def delete_appointment_clicked(event=None):
-        clear_content_frame(content_frame)
+        clear_content_frame()
 
         from appointments import list_appointments_with_customer_fullname, Appointment
         appointments_tablerows = list_appointments_with_customer_fullname()
@@ -625,7 +615,7 @@ if __name__ == '__main__':
             tmpappointment = appointments_list[appointment_cb_selected_index]
             tmpappointment.delete()
 
-            clear_content_frame(content_frame)
+            clear_content_frame()
             label = ttk.Label(content_frame, text="Το ραντεβου διαγραφηκε επιτυχως.\n" + str(
                 appointments_list[appointment_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
@@ -648,121 +638,33 @@ if __name__ == '__main__':
 
         ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
         ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame())
         cancel_btn.pack()
 
-    def search_by_date_gui():
-     def search_and_show_results():
-        date = cal.get_date()
-        if date:
-            #formatted_date = date.strftime('YYYY-MM-DD')
-            results = search_by_date(date)
-            if results:
-                show_results_window(results)
-            else:
-                messagebox.showinfo("No Results", "No results found.")
-              
-     clear_content_frame(content_frame)
-
-     label_date = tk.Label(content_frame, text="Παρακαλω επιλεξτε Ημερομηνία:")
-     label_date.pack(padx=5,pady=5)
-     cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
-     cal.pack(fill=tk.X, padx=5, pady=5)
-
-     button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
-     button_search.pack(pady=5)
-
-    # button_return = tk.Button(content_frame, text="Επιστροφή στο Μενού Αναζήτησης", command=lambda: return_to_main_menu(main_menu, content_frame))
-    # button_return.pack(pady=5)
-
-
-    def search_by_email_gui():
-      clear_content_frame(content_frame)
-      def search_and_show_results():
-        email = entry_email.get()
-        if email:
-            results = search_by_customer_email(email)
-            if results:
-                show_results_window(results)
-            else:
-                messagebox.showinfo("No Results", "Δεν βρέθηκαν αποτελέσματα.")
- 
-      label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
-      label_email.pack(padx=5,pady=5)
-      entry_email = tk.Entry(content_frame)
-      entry_email.pack(fill=tk.X, padx=5, pady=5)
-
-      button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
-      button_search.pack(pady=5)
-
-      #button_return = tk.Button(content_frame, text="Επιστροφή στο Μενού Αναζήτησης", command=lambda: return_to_main_menu(main_menu, content_frame))
-      #button_return.pack(pady=5)
-
-      
-
-    def show_results_window(results):
-      def export_to_excel_window():
-        def export():
-            filename = entry_filename.get()
-            if filename:
-                export_to_excel(results, filename + ".xlsx")
-                
-                
-        label_filename = tk.Label(content_frame, text="Πληκτολογείστε το ονομα αρχείου Excel (χωρις κατάληξη):")
-        label_filename.pack()
-
-        entry_filename = tk.Entry(content_frame)
-        entry_filename.pack()
-
-        button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
-        button_export.pack()   
-    
-      headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια")
-
-      frame = customtkinter.CTkScrollableFrame(content_frame)
-      frame.pack(padx=10, pady=10,fill=tk.BOTH, expand=True)
-
-      frame.config(width=815)
-
-
-      # Προσθήκη κεφαλίδων
-      for col, header in enumerate(headers):
-        label_header = tk.Label(frame, text=header, font=("Helvetica", 10, "bold"), padx=10, pady=5, relief=tk.RIDGE)
-        label_header.grid(row=0, column=col, sticky="nsew")
-
-      # Εμφάνιση δεδομένων
-      for row, result in enumerate(results, start=1):
-         # Εμφάνιση ID
-         label_id = tk.Label(frame, text=result[0], padx=10, pady=5, relief=tk.RIDGE)
-         label_id.grid(row=row, column=0, sticky="nsew")
-
-         # Εμφάνιση υπολοίπων δεδομένων
-         for col, data in enumerate(result[1:], start=1):
-             label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
-             label_data.grid(row=row, column=col, sticky="nsew")
-
-      button_export_excel = tk.Button(content_frame, text="Εξαγωγή σε Excel", command=export_to_excel_window)
-      button_export_excel.pack(pady=5)
-    
 
     def new_file_clicked():
-         print("placeholder")
+        print("placeholder")
 
 
     root = tk.Tk()
     root.title("Διαχειρηση Ραντεβου - Project07")
-    root.geometry("815x630")
+    root.geometry("700x500")
     menubar = tk.Menu()
 
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
     tk_search_by_date.add_command(
         label="Με Ημερομηνια",
-        command=search_by_date_gui,
+        command=new_file_clicked,
         compound=tk.LEFT
     )
     tk_search_by_date.add_command(
         label="Με email",
-        command=search_by_email_gui,
+        command=new_file_clicked,
+        compound=tk.LEFT
+    )
+    tk_search_by_date.add_command(
+        label="Με τηλεφωνο",
+        command=new_file_clicked,
         compound=tk.LEFT
     )
 
@@ -824,20 +726,9 @@ if __name__ == '__main__':
     menubar.add_cascade(menu=tk_appointments_menu, label="Ραντεβου")
     menubar.add_cascade(menu=tk_settings_menu, label="Ρυθμισεις")
 
-    root.config(menu=menubar,bg= "#282830")
+    root.config(menu=menubar)
 
-    icon = tk.PhotoImage(file="WindowLogo.png")
-    root.iconphoto(True, icon)
-    root.title("Διαχείρηση Ραντεβού")
-
-
-    content_frame = tk.Frame(root,bg= "#282830")  # , bg="orange")
+    content_frame = tk.Frame(root)  # , bg="orange")
     content_frame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.LEFT)
-  
-    logo_photo = load_logo(scale_factor=0.5)  # Φορτώνουμε το λογότυπο
-    if logo_photo:
-        label_logo = tk.Label(root, image=logo_photo,bg= "#282830")
-        label_logo.pack(side=tk.BOTTOM)
-
 
     root.mainloop()
