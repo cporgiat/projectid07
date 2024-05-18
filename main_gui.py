@@ -836,17 +836,11 @@ if __name__ == '__main__':
         command=new_file_clicked,
         compound=tk.LEFT
     )
-    tk_appointments_menu.add_command(
-        label="Εκτυπωση",
-        command=new_file_clicked,
-        compound=tk.LEFT
-    )
 
     tk_settings_menu = tk.Menu(menubar, tearoff=False)
 
     menubar.add_cascade(menu=tk_customers_menu, label="Πελατες")
     menubar.add_cascade(menu=tk_appointments_menu, label="Ραντεβου")
-    menubar.add_cascade(menu=tk_settings_menu, label="Ρυθμισεις")
 
     root.config(menu=menubar,bg= "#282830")
 
