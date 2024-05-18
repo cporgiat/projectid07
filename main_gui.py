@@ -93,11 +93,15 @@ if __name__ == '__main__':
 
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
+        
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        ok_btn = tk.Button(btn_frame, text="Δημιουργια", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
 
     def modify_customer_clicked(event=None):
@@ -211,10 +215,14 @@ if __name__ == '__main__':
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        ok_btn = tk.Button(btn_frame, text="Ενημερωση", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
 
     def delete_customer_clicked(event=None):
@@ -267,10 +275,14 @@ if __name__ == '__main__':
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
 
-        ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        ok_btn = tk.Button(btn_frame, text="Διαγραφη", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
 
     def new_appointment_clicked(event=None):
@@ -382,10 +394,14 @@ if __name__ == '__main__':
         # place the widget
         duration_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Δημιουργια", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        ok_btn = tk.Button(btn_frame, text="Δημιουργια", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
 
     def modify_appointment_clicked(event=None):
@@ -402,9 +418,6 @@ if __name__ == '__main__':
             appointment_cb_selected_index = appointment_cb.current()
             if(appointment_cb_selected_index == -1):
                 return
-
-            from customers import Customer
-            from appointments import Appointment
 
             customerIDs = {}
             counter = 0
@@ -593,10 +606,14 @@ if __name__ == '__main__':
 
         appointment_cb.bind("<<ComboboxSelected>>", lambda _: display_appointment_info())
 
-        ok_btn = tk.Button(content_frame, text="Ενημερωση", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        ok_btn = tk.Button(btn_frame, text="Ενημερωση", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
 
     def delete_appointment_clicked(event=None):
@@ -646,10 +663,14 @@ if __name__ == '__main__':
         # place the widget
         appointment_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        ok_btn = tk.Button(content_frame, text="Διαγραφη", command=lambda: retrieve_input())
-        ok_btn.pack()
-        cancel_btn = tk.Button(content_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
-        cancel_btn.pack()
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        ok_btn = tk.Button(btn_frame, text="Διαγραφη", command=lambda: retrieve_input())
+        ok_btn.grid(row=0,column=0,padx=10)
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1)
 
     def search_by_date_gui():
      def search_and_show_results():
@@ -702,11 +723,14 @@ if __name__ == '__main__':
 
     def show_results_window(results):
       def export_to_excel_window():
+        nonlocal button_export_excel
+        button_export_excel.destroy()
         def export():
             filename = entry_filename.get()
             if filename:
+
                 export_to_excel(results, filename + ".xlsx")
-                
+                                
                 
         label_filename = tk.Label(content_frame, text="Πληκτολογείστε το ονομα αρχείου Excel (χωρις κατάληξη):")
         label_filename.pack()
