@@ -7,8 +7,8 @@ from email.mime.multipart import MIMEMultipart
 from search import search_by_date  # Εισαγωγή από το προηγούμενο αρχείο
 import tkcalendar
 
-def send_email(to_address, subject, body, from_address='your_email@example.com', smtp_server='smtp.example.com',
-               smtp_port=587, smtp_user='username', smtp_pass='password'):
+def send_email(to_address, subject, body, from_address='ypenthimisirantevou@gmail.com', smtp_server='smtp.gmail.com',
+               smtp_port=587, smtp_user='ypenthimisirantevou@gmail.com', smtp_pass='hsvx12345!'):
     # Δημιουργία του email
     msg = MIMEMultipart()
     msg['From'] = from_address
