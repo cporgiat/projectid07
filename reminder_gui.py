@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from search import search_by_date  # Εισαγωγή από το προηγούμενο αρχείο
 import tkcalendar
-
+#Στοιχεια αποστολης SMTP Server
 def send_email(to_address, subject, body, from_address='ypenthimisirantevou@gmail.com', smtp_server='smtp.gmail.com',
                smtp_port=587, smtp_user='ypenthimisirantevou@gmail.com', smtp_pass='hsvx12345!'):
     # Δημιουργία του email
