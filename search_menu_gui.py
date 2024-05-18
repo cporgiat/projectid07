@@ -115,7 +115,7 @@ def show_results_window(results):
     window = tk.Tk()
     window.title("Αποτελέσματα Αναζήτησης")
 
-    headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια")
+    headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια", "Email")
 
     frame = tk.Frame(window)
     frame.pack(padx=10, pady=10)
