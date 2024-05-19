@@ -21,19 +21,18 @@ def search_by_date(date):
     return results
 
 
-# Συνάρτηση αναζήτησης με βάση το όνομα πελάτη
-def search_by_customer_name(firstname, lastname):
+# Συνάρτηση αναζήτησης με βάση το email πελάτη
+def search_by_customer_email(email):
     with get_connection() as conn:
         cursor = conn.cursor()
         sql = """
             SELECT app.id, cust.firstname, cust.lastname, app.datetime, app.duration
             FROM appointments app
             JOIN customers cust ON app.customerid = cust.id
-            WHERE cust.firstname = ? AND cust.lastname = ?
+            WHERE cust.email = ?
         """
-        results = cursor.execute(sql, (firstname, lastname)).fetchall()
+        results = cursor.execute(sql, (email,)).fetchall()
     return results
-
 
 # Συνάρτηση για εκτύπωση αποτελεσμάτων στην οθόνη
 def print_results(results):
