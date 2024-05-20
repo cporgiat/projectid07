@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     def load_logo(scale_factor=0.5):
      try:
-        logo = tk.PhotoImage(file="Logo.png")
+        logo = tk.PhotoImage(file="assets/logo.png")
         logo = logo.subsample(int(1.5/scale_factor))  # Κλιμάκωση του λογότυπου
         return logo
      except tk.TclError as e:
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
         from customers import Customer, no_customers
         if(no_customers()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!"
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
                                                      "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
                                                 "για να δημιουργησετε καινουργιους πελατες.")
             return
@@ -230,7 +230,7 @@ if __name__ == '__main__':
 
         from customers import Customer, no_customers
         if(no_customers()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!"
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
                                                      "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
                                                 "για να δημιουργησετε καινουργιους πελατες.")
             return
@@ -293,7 +293,12 @@ if __name__ == '__main__':
     def new_appointment_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         def retrieve_input():
@@ -417,7 +422,7 @@ if __name__ == '__main__':
 
         from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments, no_appointments
         if(no_appointments()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!"
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
                                                      "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
                                                 "για να δημιουργησετε καινουργια ραντεβου.")
             return
@@ -631,7 +636,7 @@ if __name__ == '__main__':
 
         from appointments import list_appointments_with_customer_fullname, Appointment, no_appointments
         if(no_appointments()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!"
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
                                                      "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
                                                 "για να δημιουργησετε καινουργια ραντεβου.")
             return
@@ -859,7 +864,7 @@ if __name__ == '__main__':
 
     root.config(menu=menubar,bg= "#282830")
 
-    icon = tk.PhotoImage(file="WindowLogo.png")
+    icon = tk.PhotoImage(file="assets/WindowLogo.png")
     root.iconphoto(True, icon)
     root.title("Διαχείρηση Ραντεβού")
 
