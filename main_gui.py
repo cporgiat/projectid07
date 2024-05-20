@@ -1,12 +1,7 @@
-import appointments_menu
-import customers_menu
-import search_menu
-import print_menu
 from tkcalendar import DateEntry
 from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
 from tkinter import messagebox
-from utils import get_number
-from reminder import send_appointment_reminder
+
   
 if __name__ == '__main__':
     import customtkinter
@@ -107,7 +102,12 @@ if __name__ == '__main__':
     def modify_customer_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         customerIDs = {}
@@ -228,7 +228,12 @@ if __name__ == '__main__':
     def delete_customer_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         def retrieve_input():
@@ -410,7 +415,12 @@ if __name__ == '__main__':
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments
+        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments, no_appointments
+        if(no_appointments()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!"
+                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
+                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
 
@@ -619,7 +629,12 @@ if __name__ == '__main__':
     def delete_appointment_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from appointments import list_appointments_with_customer_fullname, Appointment
+        from appointments import list_appointments_with_customer_fullname, Appointment, no_appointments
+        if(no_appointments()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!"
+                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
+                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
         appointmentIDs = {}
