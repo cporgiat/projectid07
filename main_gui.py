@@ -763,7 +763,7 @@ if __name__ == '__main__':
         button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
         button_export.pack()   
     
-      headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια")
+      headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια","Email")
 
       frame = customtkinter.CTkScrollableFrame(content_frame)
       frame.pack(padx=10, pady=10,fill=tk.BOTH, expand=True)
