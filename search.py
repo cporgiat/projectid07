@@ -12,7 +12,7 @@ def search_by_date(date):
     with get_connection() as conn:
         cursor = conn.cursor()
         sql = """
-            SELECT app.id, cust.firstname, cust.lastname, app.datetime, app.duration
+            SELECT app.id, cust.firstname, cust.lastname, app.datetime, app.duration, cust.email
             FROM appointments app
             JOIN customers cust ON app.customerid = cust.id
             WHERE DATE(app.datetime) = ?
@@ -26,7 +26,7 @@ def search_by_customer_email(email):
     with get_connection() as conn:
         cursor = conn.cursor()
         sql = """
-            SELECT app.id, cust.firstname, cust.lastname, app.datetime, app.duration
+            SELECT app.id, cust.firstname, cust.lastname, app.datetime, app.duration, cust.email
             FROM appointments app
             JOIN customers cust ON app.customerid = cust.id
             WHERE cust.email = ?
@@ -37,11 +37,11 @@ def search_by_customer_email(email):
 # Συνάρτηση για εκτύπωση αποτελεσμάτων στην οθόνη
 def print_results(results):
     for result in results:
-        print(f"ID: {result[0]}, Πελάτης: {result[1]} {result[2]}, Ημερομηνία: {result[3]}, Διάρκεια: {result[4]} λεπτά")
+        print(f"ID: {result[0]}, Πελάτης: {result[1]} {result[2]}, Ημερομηνία: {result[3]}, Διάρκεια: {result[4]} λεπτά, Email: {result[5]}")
 
 
 # Συνάρτηση για εξαγωγή σε Excel
 def export_to_excel(results, filename):
-    df = pd.DataFrame(results, columns=['ID', 'First Name', 'Last Name', 'Datetime', 'Duration'])
+    df = pd.DataFrame(results, columns=['ID', 'First Name', 'Last Name', 'Datetime', 'Duration', 'Email'])
     df.to_excel(filename, index=False)
     print(f"Εξαγωγή σε Excel με όνομα {filename}")

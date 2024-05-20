@@ -7,8 +7,8 @@ from email.mime.multipart import MIMEMultipart
 from search import search_by_date  # Εισαγωγή από το προηγούμενο αρχείο
 import tkcalendar
 #Στοιχεια αποστολης SMTP Server
-def send_email(to_address, subject, body, from_address='ypenthimisirantevou@gmail.com', smtp_server='smtp.gmail.com',
-               smtp_port=587, smtp_user='ypenthimisirantevou@gmail.com', smtp_pass='hsvx12345!'):
+def send_email(to_address, subject, body, from_address='ypenthimisirantevou@mail.com', smtp_server='smtp-relay.brevo.com',
+               smtp_port=587, smtp_user='750db5001@smtp-brevo.com', smtp_pass='YHSpbzaq208AmCNB'):
     # Δημιουργία του email
     msg = MIMEMultipart()
     msg['From'] = from_address
@@ -50,9 +50,9 @@ def search_and_display_results():
 
 def send_reminder(results):
     for result in results:
-        customer_email = result[3]
+        customer_email = result[5]
         customer_name = f"{result[1]} {result[2]}"
-        appointment_datetime = result[4]
+        appointment_datetime = result[3]
 
         subject = "Υπενθύμιση Ραντεβού"
         body = f"Αγαπητέ {customer_name},\n\nΥπενθύμιση για το ραντεβού σας στις {appointment_datetime}.\n\nΕυχαριστούμε!"
