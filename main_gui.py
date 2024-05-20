@@ -254,7 +254,9 @@ if __name__ == '__main__':
                 counter = counter + 1
 
             from customers import delete_appointments_of_customerid
-            delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
+            from appointments import no_appointments
+            if(not no_appointments()):
+                delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.delete()
 
