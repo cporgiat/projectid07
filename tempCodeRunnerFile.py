@@ -1,7 +1,1 @@
-
-        window.mainloop()
-
-    window = tk.Tk()
-    window.title("Αποτελέσματα Αναζήτησης")
-
-    headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια", "
+button_export_excel

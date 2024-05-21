@@ -1,19 +1,21 @@
-import appointments_menu
-import customers_menu
-import search_menu
-import print_menu
-from tkcalendar import DateEntry
-from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
-from tkinter import messagebox
-from utils import get_number
-from reminder import send_appointment_reminder
   
 if __name__ == '__main__':
     import customtkinter
     import tkinter as tk
-    from tkinter import ttk
-    from tkinter import messagebox
     from datetime import datetime
+    import appointments_menu
+    import customers_menu
+    import search_menu
+    import print_menu
+    from tkcalendar import DateEntry
+    from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
+    from tkinter import messagebox ,ttk
+    from utils import get_number
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    import smtplib
+    from reminder import send_email 
+    from reminder import send_reminder
 
     def load_logo(scale_factor=0.5):
      try:
@@ -343,7 +345,6 @@ if __name__ == '__main__':
         label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        from tkcalendar import DateEntry
         cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                         width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
                         borderwidth=2)
@@ -738,9 +739,16 @@ if __name__ == '__main__':
         entry_filename = tk.Entry(content_frame)
         entry_filename.pack()
 
-        button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
-        button_export.pack()   
-    
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1,padx=10)
+        button_export = tk.Button(btn_frame, text="Εξαγωγή", command=export)
+        button_export.grid(row=0,column=0)
+
+   
       headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια","Email")
 
       frame = customtkinter.CTkScrollableFrame(content_frame)
@@ -765,9 +773,57 @@ if __name__ == '__main__':
              label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
              label_data.grid(row=row, column=col, sticky="nsew")
 
+
       button_export_excel = tk.Button(content_frame, text="Εξαγωγή σε Excel", command=export_to_excel_window)
-      button_export_excel.pack(pady=5)
+      button_export_excel.pack()
     
+    def reminder():
+      x = 0
+      if content_frame:
+        clear_content_frame(content_frame)
+       
+      label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
+      label_email.pack(padx=5,pady=5)
+      label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
+      label.pack(fill=tk.X, padx=5, pady=5)
+
+      entry = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
+                        width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
+                        borderwidth=2)
+
+      entry.pack(fill=tk.X, padx=5, pady=5)
+
+      def search_and_display_results():
+       
+       
+       date = entry.get()
+       results = search_by_date(date)
+
+       ResultFrame = tk.Frame(content_frame,bg= "#282830")
+       ResultFrame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.LEFT)
+
+       if results:
+          for result in results:
+             customer_name = f"{result[1]} {result[2]}"
+             appointment_datetime = result[4]
+
+             result_label = tk.Label(ResultFrame, text=f"Πελάτης: {customer_name}, Ημερομηνία: {appointment_datetime}")
+             result_label.pack()
+
+          send_button = tk.Button(ResultFrame, text="Αποστολή Email Υπενθύμισης", command=lambda: send_reminder(results))
+          send_button.pack()
+       else:
+          messagebox.showinfo("Καμία εγγραφή", "Δεν βρέθηκαν ραντεβού για την επιλεγμένη ημερομηνία.")
+          clear_content_frame(ResultFrame)
+
+      btn_frame = tk.Frame(content_frame)
+      btn_frame.configure(bg= "#282830")
+      btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+      button_search = tk.Button(btn_frame, text="Αναζήτηση", command=search_and_display_results)
+      button_search.grid(row=0,column=0,padx=10)
+      cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+      cancel_btn.grid(row=0,column=1)
 
     def new_file_clicked():
          print("placeholder")
@@ -833,7 +889,7 @@ if __name__ == '__main__':
 
     tk_appointments_menu.add_command(
         label="Υπενθυμιση",
-        command=new_file_clicked,
+        command=reminder,
         compound=tk.LEFT
     )
 
