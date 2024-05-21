@@ -139,9 +139,9 @@ if __name__ == '__main__':
                                                 "Δοκιμαστε παλι.")
                 return
 
-            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==9)):
+            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==10)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
-                                                "Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι."
+                                                "Επιτρεπονται μονο 10αψηφιοι θετικοι αριθμοι."
                                                 "Δοκιμαστε παλι.")
                 return
 
