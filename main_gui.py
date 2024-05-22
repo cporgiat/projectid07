@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     def load_logo(scale_factor=0.5):
      try:
-        logo = tk.PhotoImage(file="Logo.png")
+        logo = tk.PhotoImage(file="assets/logo.png")
         logo = logo.subsample(int(1.5/scale_factor))  # Κλιμάκωση του λογότυπου
         return logo
      except tk.TclError as e:
@@ -109,7 +109,12 @@ if __name__ == '__main__':
     def modify_customer_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         customerIDs = {}
@@ -141,9 +146,9 @@ if __name__ == '__main__':
                                                 "Δοκιμαστε παλι.")
                 return
 
-            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==9)):
+            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==10)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
-                                                "Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι."
+                                                "Επιτρεπονται μονο 10αψηφιοι θετικοι αριθμοι."
                                                 "Δοκιμαστε παλι.")
                 return
 
@@ -230,7 +235,12 @@ if __name__ == '__main__':
     def delete_customer_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         def retrieve_input():
@@ -251,7 +261,9 @@ if __name__ == '__main__':
                 counter = counter + 1
 
             from customers import delete_appointments_of_customerid
-            delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
+            from appointments import no_appointments
+            if(not no_appointments()):
+                delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.delete()
 
@@ -290,7 +302,12 @@ if __name__ == '__main__':
     def new_appointment_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from customers import Customer
+        from customers import Customer, no_customers
+        if(no_customers()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
+                                                "για να δημιουργησετε καινουργιους πελατες.")
+            return
         customers_list = Customer.get_table_rows()
 
         def retrieve_input():
@@ -411,7 +428,12 @@ if __name__ == '__main__':
         from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments
+        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments, no_appointments
+        if(no_appointments()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
+                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
 
@@ -620,7 +642,12 @@ if __name__ == '__main__':
     def delete_appointment_clicked(event=None):
         clear_content_frame(content_frame)
 
-        from appointments import list_appointments_with_customer_fullname, Appointment
+        from appointments import list_appointments_with_customer_fullname, Appointment, no_appointments
+        if(no_appointments()):
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
+                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
+                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
         appointmentIDs = {}
@@ -902,7 +929,7 @@ if __name__ == '__main__':
 
     root.config(menu=menubar,bg= "#282830")
 
-    icon = tk.PhotoImage(file="WindowLogo.png")
+    icon = tk.PhotoImage(file="assets/WindowLogo.png")
     root.iconphoto(True, icon)
     root.title("Διαχείρηση Ραντεβού")
 
