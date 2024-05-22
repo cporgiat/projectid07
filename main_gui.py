@@ -727,6 +727,8 @@ if __name__ == '__main__':
         nonlocal button_export_excel
         button_export_excel.destroy()
         def export():
+            if frame:
+              frame.destroy()
             filename = entry_filename.get()
             if filename:
 
