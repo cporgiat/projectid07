@@ -692,6 +692,13 @@ if __name__ == '__main__':
         cancel_btn.grid(row=0,column=1)
 
     def search_by_date_gui():
+     clear_content_frame(content_frame)
+     from appointments import no_appointments
+     if(no_appointments()):
+           tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργια ραντεβού.")
+           return
      def search_and_show_results():
         date = cal.get_date()
         if date:
@@ -702,7 +709,6 @@ if __name__ == '__main__':
             else:
                 messagebox.showinfo("No Results", "No results found.")
               
-     clear_content_frame(content_frame)
 
      label_date = tk.Label(content_frame, text="Παρακαλω επιλέξτε Ημερομηνία:")
      label_date.pack(padx=5,pady=5)
@@ -718,6 +724,12 @@ if __name__ == '__main__':
 
     def search_by_email_gui():
       clear_content_frame(content_frame)
+      from appointments import no_appointments
+      if(no_appointments()):
+           tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργια ραντεβού.")
+           return
       def search_and_show_results():
         email = entry_email.get()
         if email:
@@ -798,10 +810,13 @@ if __name__ == '__main__':
       button_export_excel.pack()
     
     def reminder():
-      x = 0
-      if content_frame:
-        clear_content_frame(content_frame)
-       
+      clear_content_frame(content_frame)
+      from appointments import no_appointments
+      if(no_appointments()):
+           tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργια ραντεβού.")
+           return
       label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
       label_email.pack(padx=5,pady=5)
       label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
@@ -826,7 +841,7 @@ if __name__ == '__main__':
           ResultFrame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.BOTTOM)
           for result in results:
              customer_name = f"{result[1]} {result[2]}"
-             appointment_datetime = result[4]
+             appointment_datetime = result[3]
 
              result_label = tk.Label(ResultFrame, text=f"Πελάτης: {customer_name}, Ημερομηνία: {appointment_datetime}")
              result_label.pack(pady=5)
