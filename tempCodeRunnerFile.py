@@ -1,0 +1,1 @@
+results_frame = tk.Frame(content_frame)

@@ -1,14 +1,17 @@
-from tkcalendar import DateEntry
-from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
-from tkinter import messagebox
-
   
 if __name__ == '__main__':
     import customtkinter
     import tkinter as tk
-    from tkinter import ttk
-    from tkinter import messagebox
     from datetime import datetime
+    from tkcalendar import DateEntry
+    from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
+    from tkinter import messagebox ,ttk
+    from utils import get_number
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    import smtplib
+    from reminder import send_email 
+    from reminder import send_reminder
 
     def load_logo(scale_factor=0.5):
      try:
@@ -36,48 +39,48 @@ if __name__ == '__main__':
             ap_email = textbox_email.get("1.0", "end-1c")
 
             if(not validate_input_only_letters(ap_firstname)):
-                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Ονομα χρησιμοποιηστε μονο\n "
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το όνομα χρησιμοποιήστε μόνο\n "
                                                 "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
             if(not validate_input_only_letters(ap_lastname)):
-                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επωνυμο χρησιμοποιηστε μονο\n"
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επώνυμο χρησιμοποιήστε μόνο\n"
                                                 "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
-            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==9)):
+            if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==10)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
-                                                "Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι."
+                                                "Επιτρεπονται μόνο 10αψηφιοι θετικοι αριθμοι."
                                                 "Δοκιμαστε παλι.")
                 return
 
             if(not validate_input_email(ap_email)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη email. "
-                                                "Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
+                                                "Επιτρεπονται μόνο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
             newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
             clear_content_frame(content_frame)
-            label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχως.\n" + str(newcustomer))
+            label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχώς.\n" + str(newcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Ονομα:")
+        label = ttk.Label(content_frame, text="Όνομα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_firstname = tk.Text(content_frame, height=1, width=10)
         textbox_firstname.pack(fill=tk.X, padx=5, pady=5)
 
-        label = ttk.Label(content_frame, text="Επωνυμο:")
+        label = ttk.Label(content_frame, text="Επώνυμο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_lastname = tk.Text(content_frame, height=1, width=10)
         textbox_lastname.pack(fill=tk.X, padx=5, pady=5)
 
-        label = ttk.Label(content_frame, text="Τηλεφωνο:")
+        label = ttk.Label(content_frame, text="Τηλέφωνο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_phone = tk.Text(content_frame, height=1, width=10)
@@ -93,9 +96,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Δημιουργια", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Δημιουργία", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
 
@@ -104,9 +107,9 @@ if __name__ == '__main__':
 
         from customers import Customer, no_customers
         if(no_customers()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
-                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
-                                                "για να δημιουργησετε καινουργιους πελατες.")
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργιους πελάτες.")
             return
         customers_list = Customer.get_table_rows()
 
@@ -128,26 +131,26 @@ if __name__ == '__main__':
             ap_email = textbox_email.get("1.0", "end-1c")
 
             if(not validate_input_only_letters(ap_firstname)):
-                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Ονομα χρησιμοποιηστε μονο\n "
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το όνομα χρησιμοποιήστε μόνο\n "
                                                 "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
             if(not validate_input_only_letters(ap_lastname)):
-                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επωνυμο χρησιμοποιηστε μονο\n"
+                tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επώνυμο χρησιμοποιήστε μόνο\n"
                                                 "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
             if((not validate_input_only_numbers(ap_mobile)) or (not len(ap_mobile)==10)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη τηλεφωνου. "
-                                                "Επιτρεπονται μονο 10αψηφιοι θετικοι αριθμοι."
+                                                "Επιτρεπονται μόνο 10αψηφιοι θετικοι αριθμοι."
                                                 "Δοκιμαστε παλι.")
                 return
 
             if(not validate_input_email(ap_email)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Λαθος μορφη email. "
-                                                "Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
+                                                "Επιτρεπονται μόνο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα."
                                                 "Δοκιμαστε παλι.")
                 return
 
@@ -157,7 +160,7 @@ if __name__ == '__main__':
             tmpcustomer.change_mobile(ap_mobile)
             tmpcustomer.change_email(ap_email)
             clear_content_frame(content_frame)
-            label = ttk.Label(content_frame, text="Ο πελατης ενημερωθηκε επιτυχως.\n" + str(tmpcustomer))
+            label = ttk.Label(content_frame, text="Ο πελατης ενημερωθηκε επιτυχώς.\n" + str(tmpcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         def display_customer_info():
@@ -173,7 +176,7 @@ if __name__ == '__main__':
             textbox_email.insert("end-1c", tmpcustomer.email)
 
         # # label
-        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -191,19 +194,19 @@ if __name__ == '__main__':
         customer_cb.bind("<<ComboboxSelected>>", lambda _: display_customer_info())
 
         # label
-        label = ttk.Label(content_frame, text="Ονομα:")
+        label = ttk.Label(content_frame, text="Όνομα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_firstname = tk.Text(content_frame, height=1, width=10)
         textbox_firstname.pack(fill=tk.X, padx=5, pady=5)
 
-        label = ttk.Label(content_frame, text="Επωνυμο:")
+        label = ttk.Label(content_frame, text="Επώνυμο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_lastname = tk.Text(content_frame, height=1, width=10)
         textbox_lastname.pack(fill=tk.X, padx=5, pady=5)
 
-        label = ttk.Label(content_frame, text="Τηλεφωνο:")
+        label = ttk.Label(content_frame, text="Τηλέφωνο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_phone = tk.Text(content_frame, height=1, width=10)
@@ -219,9 +222,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Ενημερωση", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Ενημέρωση", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
 
@@ -230,9 +233,9 @@ if __name__ == '__main__':
 
         from customers import Customer, no_customers
         if(no_customers()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
-                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
-                                                "για να δημιουργησετε καινουργιους πελατες.")
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργιους πελάτες.")
             return
         customers_list = Customer.get_table_rows()
 
@@ -241,9 +244,9 @@ if __name__ == '__main__':
             if(customer_cb_selected_index == -1):
                 return
 
-            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε τον πελατη\n\n"
+            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε τον πελάτη\n\n"
                                          +str(customers_list[customer_cb_selected_index])+
-                                         "\n\nΘα διαγραφουν μαζι και ολα του τα ραντεβου."
+                                         "\n\nΘα διαγραφουν μαζι και ολα του τα ραντεβού."
                                          "\nΕιστε σιγουροι;")):
                 return
 
@@ -262,11 +265,11 @@ if __name__ == '__main__':
 
             clear_content_frame(content_frame)
             label = ttk.Label(content_frame,
-                              text="Ο πελατης διαγραφηκε επιτυχως.\n" + str(customers_list[customer_cb_selected_index]))
+                              text="Ο πελατης διαγράφηκε επιτυχώς.\n" + str(customers_list[customer_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -286,9 +289,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Διαγραφη", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Διαγραφή", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
 
@@ -297,9 +300,9 @@ if __name__ == '__main__':
 
         from customers import Customer, no_customers
         if(no_customers()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν πελατες στην βαση!\n"
-                                                     "Πηγαινετε πρωτα στο μενου Πελατες\Δημιουργια "
-                                                "για να δημιουργησετε καινουργιους πελατες.")
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργιους πελάτες.")
             return
         customers_list = Customer.get_table_rows()
 
@@ -326,17 +329,17 @@ if __name__ == '__main__':
 
             if(not no_overlapping_appointments(ap_datetime, ap_duration)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
-                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου."
+                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβού."
                                             "\nΔοκιμαστε παλι.")
                 return
 
             newappointment = Appointment.create(ap_customerid, ap_datetime, ap_duration)
             clear_content_frame(content_frame)
-            label = ttk.Label(content_frame, text="Το ραντεβου δημιουργηθηκε επιτυχως.\n" + str(newappointment))
+            label = ttk.Label(content_frame, text="Το ραντεβού δημιουργηθηκε επιτυχώς.\n" + str(newappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -352,10 +355,9 @@ if __name__ == '__main__':
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        from tkcalendar import DateEntry
         cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                         width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
                         borderwidth=2)
@@ -363,7 +365,7 @@ if __name__ == '__main__':
         cal.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Ωρα:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Ώρα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         hour_cb = ttk.Combobox(content_frame)
@@ -390,7 +392,7 @@ if __name__ == '__main__':
         minutes_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Διαρκεια:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # selected_duration = tk.StringVar()
@@ -410,9 +412,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Δημιουργια", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Δημιουργία", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
 
@@ -424,9 +426,9 @@ if __name__ == '__main__':
 
         from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments, no_appointments
         if(no_appointments()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
-                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
-                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργια ραντεβού.")
             return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
@@ -457,7 +459,7 @@ if __name__ == '__main__':
 
             if(not no_overlapping_appointments(ap_datetime, ap_duration)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
-                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβου."
+                                            "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβού."
                                             "\nΔοκιμαστε παλι.")
                 return
 
@@ -469,7 +471,7 @@ if __name__ == '__main__':
             # print(tmpappointment)
 
             clear_content_frame(content_frame)
-            label = ttk.Label(content_frame, text="Το ραντεβου ενημερωθηκε επιτυχως.\n" + str(tmpappointment))
+            label = ttk.Label(content_frame, text="Το ραντεβού ενημερωθηκε επιτυχώς.\n" + str(tmpappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         def display_appointment_info():
@@ -535,7 +537,7 @@ if __name__ == '__main__':
             duration_cb.current(durationIndex[tmpappointment.duration])
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
+        label = ttk.Label(content_frame, text="Επιλέξτε ρεντεβού:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -551,7 +553,7 @@ if __name__ == '__main__':
         appointment_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε πελατη:")
+        label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -567,7 +569,7 @@ if __name__ == '__main__':
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Ημερομηνια:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         cal = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
@@ -577,7 +579,7 @@ if __name__ == '__main__':
         cal.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Ωρα:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Ώρα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         hour_cb = ttk.Combobox(content_frame)
@@ -605,7 +607,7 @@ if __name__ == '__main__':
         minutes_cb.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε Διαρκεια:")
+        label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # selected_duration = tk.StringVar()
@@ -627,9 +629,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Ενημερωση", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Ενημέρωση", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
 
@@ -638,9 +640,9 @@ if __name__ == '__main__':
 
         from appointments import list_appointments_with_customer_fullname, Appointment, no_appointments
         if(no_appointments()):
-            tk.messagebox.showerror("Προσοχη!", "Δεν υπαρχουν ραντεβου στην βαση!\n"
-                                                     "Πηγαινετε πρωτα στο μενου Ραντεβου\Δημιουργια "
-                                                "για να δημιουργησετε καινουργια ραντεβου.")
+            tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
+                                                     "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
+                                                "για να δημιουργήσετε καινούργια ραντεβού.")
             return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
@@ -651,7 +653,7 @@ if __name__ == '__main__':
             if(appointment_cb_selected_index == -1):
                 return
 
-            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε το ραντεβου\n\n"
+            if(not tk.messagebox.askokcancel("Προσοχη!", "Προσοχη! \nΕχετε επιλεξει να διαγραψετε το ραντεβού\n\n"
                                          +str(appointments_list[appointment_cb_selected_index])+
                                          "\n\nΕιστε σιγουροι;")):
                 return
@@ -665,12 +667,12 @@ if __name__ == '__main__':
             tmpappointment.delete()
 
             clear_content_frame(content_frame)
-            label = ttk.Label(content_frame, text="Το ραντεβου διαγραφηκε επιτυχως.\n" + str(
+            label = ttk.Label(content_frame, text="Το ραντεβού διαγράφηκε επιτυχώς.\n" + str(
                 appointments_list[appointment_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
 
         # label
-        label = ttk.Label(content_frame, text="Επιλεξτε ρεντεβου:")
+        label = ttk.Label(content_frame, text="Επιλέξτε ρεντεβού:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
@@ -689,9 +691,9 @@ if __name__ == '__main__':
         btn_frame.configure(bg= "#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
 
-        ok_btn = tk.Button(btn_frame, text="Διαγραφη", command=lambda: retrieve_input())
+        ok_btn = tk.Button(btn_frame, text="Διαγραφή", command=lambda: retrieve_input())
         ok_btn.grid(row=0,column=0,padx=10)
-        cancel_btn = tk.Button(btn_frame, text="Ακυρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0,column=1)
 
     def search_by_date_gui():
@@ -707,7 +709,7 @@ if __name__ == '__main__':
               
      clear_content_frame(content_frame)
 
-     label_date = tk.Label(content_frame, text="Παρακαλω επιλεξτε Ημερομηνία:")
+     label_date = tk.Label(content_frame, text="Παρακαλω επιλέξτε Ημερομηνία:")
      label_date.pack(padx=5,pady=5)
      cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
      cal.pack(fill=tk.X, padx=5, pady=5)
@@ -744,25 +746,34 @@ if __name__ == '__main__':
       
 
     def show_results_window(results):
+      clear_content_frame(content_frame)
       def export_to_excel_window():
         nonlocal button_export_excel
         button_export_excel.destroy()
         def export():
+
             filename = entry_filename.get()
             if filename:
 
                 export_to_excel(results, filename + ".xlsx")
                                 
                 
-        label_filename = tk.Label(content_frame, text="Πληκτολογείστε το ονομα αρχείου Excel (χωρις κατάληξη):")
+        label_filename = tk.Label(content_frame, text="Πληκτολογείστε το όνομα αρχείου Excel (χωρις κατάληξη):")
         label_filename.pack()
 
         entry_filename = tk.Entry(content_frame)
         entry_filename.pack()
 
-        button_export = tk.Button(content_frame, text="Εξαγωγή", command=export)
-        button_export.pack()   
-    
+        btn_frame = tk.Frame(content_frame)
+        btn_frame.configure(bg= "#282830")
+        btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+        cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
+        cancel_btn.grid(row=0,column=1,padx=10)
+        button_export = tk.Button(btn_frame, text="Εξαγωγή", command=export)
+        button_export.grid(row=0,column=0)
+
+   
       headers = ("Κωδικός", "Όνομα", "Επίθετο", "Ημερομηνία/Ώρα Ραντεβού", "Διάρκεια","Email")
 
       frame = customtkinter.CTkScrollableFrame(content_frame)
@@ -787,22 +798,71 @@ if __name__ == '__main__':
              label_data = tk.Label(frame, text=data, padx=10, pady=5, relief=tk.RIDGE)
              label_data.grid(row=row, column=col, sticky="nsew")
 
+
       button_export_excel = tk.Button(content_frame, text="Εξαγωγή σε Excel", command=export_to_excel_window)
-      button_export_excel.pack(pady=5)
+      button_export_excel.pack()
     
+    def reminder():
+      x = 0
+      if content_frame:
+        clear_content_frame(content_frame)
+       
+      label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
+      label_email.pack(padx=5,pady=5)
+      label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
+      label.pack(fill=tk.X, padx=5, pady=5)
+
+      entry = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
+                        width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
+                        borderwidth=2)
+
+      entry.pack(fill=tk.X, padx=5, pady=5)
+
+      def search_and_display_results():
+       
+       
+       date = entry.get()
+       results = search_by_date(date)
+
+
+       if results:
+          clear_content_frame(content_frame)
+          ResultFrame = tk.Frame(content_frame,bg= "#282830")
+          ResultFrame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.BOTTOM)
+          for result in results:
+             customer_name = f"{result[1]} {result[2]}"
+             appointment_datetime = result[4]
+
+             result_label = tk.Label(ResultFrame, text=f"Πελάτης: {customer_name}, Ημερομηνία: {appointment_datetime}")
+             result_label.pack(pady=5)
+
+          send_button = tk.Button(ResultFrame, text="Αποστολή Email Υπενθύμισης", command=lambda: send_reminder(results))
+          send_button.pack(pady=5)
+       else:
+          messagebox.showinfo("Καμία εγγραφή", "Δεν βρέθηκαν ραντεβού για την επιλεγμένη ημερομηνία.")
+          clear_content_frame(ResultFrame)
+
+      btn_frame = tk.Frame(content_frame)
+      btn_frame.configure(bg= "#282830")
+      btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
+
+      button_search = tk.Button(btn_frame, text="Αναζήτηση", command=search_and_display_results)
+      button_search.grid(row=0,column=0,padx=10)
+      cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
+      cancel_btn.grid(row=0,column=1)
 
     def new_file_clicked():
          print("placeholder")
 
 
     root = tk.Tk()
-    root.title("Διαχειρηση Ραντεβου - Project07")
-    root.geometry("815x630")
+    root.title("Διαχείρηση ραντεβού - Project07")
+    root.geometry("915x650")
     menubar = tk.Menu()
 
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
     tk_search_by_date.add_command(
-        label="Με Ημερομηνια",
+        label="Με Ημερομηνία",
         command=search_by_date_gui,
         compound=tk.LEFT
     )
@@ -814,34 +874,34 @@ if __name__ == '__main__':
 
     tk_customers_menu = tk.Menu(menubar, tearoff=False)
     tk_customers_menu.add_command(
-        label="Δημιουργια",
+        label="Δημιουργία",
         command=new_customer_clicked,
         compound=tk.LEFT
     )
     tk_customers_menu.add_command(
-        label="Τροποποιηση",
+        label="Τροποποίηση",
         command=modify_customer_clicked,
         compound=tk.LEFT
     )
     tk_customers_menu.add_command(
-        label="Διαγραφη",
+        label="Διαγραφή",
         command=delete_customer_clicked,
         compound=tk.LEFT
     )
 
     tk_appointments_menu = tk.Menu(menubar, tearoff=False)
     tk_appointments_menu.add_command(
-        label="Δημιουργια",
+        label="Δημιουργία",
         command=new_appointment_clicked,
         compound=tk.LEFT
     )
     tk_appointments_menu.add_command(
-        label="Τροποποιηση",
+        label="Τροποποίηση",
         command=modify_appointment_clicked,
         compound=tk.LEFT
     )
     tk_appointments_menu.add_command(
-        label="Διαγραφη",
+        label="Διαγραφή",
         command=delete_appointment_clicked,
         compound=tk.LEFT
     )
@@ -850,19 +910,19 @@ if __name__ == '__main__':
 
     tk_appointments_menu.add_cascade(
         menu=tk_search_by_date,
-        label="Αναζητηση"
+        label="Αναζήτηση"
     )
 
     tk_appointments_menu.add_command(
-        label="Υπενθυμιση",
-        command=new_file_clicked,
+        label="Υπενθύμιση",
+        command=reminder,
         compound=tk.LEFT
     )
 
     tk_settings_menu = tk.Menu(menubar, tearoff=False)
 
-    menubar.add_cascade(menu=tk_customers_menu, label="Πελατες")
-    menubar.add_cascade(menu=tk_appointments_menu, label="Ραντεβου")
+    menubar.add_cascade(menu=tk_customers_menu, label="Πελάτες")
+    menubar.add_cascade(menu=tk_appointments_menu, label="Ραντεβού")
 
     root.config(menu=menubar,bg= "#282830")
 
