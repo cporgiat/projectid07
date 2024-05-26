@@ -390,7 +390,7 @@ if __name__ == '__main__':
         label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # selected_duration = tk.StringVar()
+        selected_duration = tk.StringVar()
         duration_cb = ttk.Combobox(content_frame)
 
         duration_cb['values'] = [5, 10, 15, 30, 60, 90, 120]
@@ -605,7 +605,7 @@ if __name__ == '__main__':
         label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # selected_duration = tk.StringVar()
+        selected_duration = tk.StringVar()
         duration_cb = ttk.Combobox(content_frame)
 
         duration_cb['values'] = [5, 10, 15, 30, 60, 90, 120]
