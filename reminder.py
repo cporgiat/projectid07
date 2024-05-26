@@ -45,4 +45,11 @@ def send_reminder(results):
             body=body
         )
 
+        
 
+"""""""""
+# Παράδειγμα χρήσης της συνάρτησης υπενθύμισης
+if __name__ == "__main__":
+    date = input("Εισάγετε την ημερομηνία για την οποία θέλετε να στείλετε υπενθυμίσεις (YYYY-MM-DD): ")
+    send_appointment_reminder(date)
+"""""""""
