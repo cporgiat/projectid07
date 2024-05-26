@@ -761,8 +761,13 @@ if __name__ == '__main__':
 
             filename = entry_filename.get()
             if filename:
+                try:
+                    export_to_excel(results, filename + ".xlsx")
+                    clear_content_frame(content_frame)
+                    tk.messagebox.showinfo("Πληροφορία", f"Εξαγωγή σε Excel με όνομα {filename}.xlsx")
+                except:
+                    tk.messagebox.showerror("Προσοχή!", "Παρσουσιάστηκε πρόβλημα κατά την δημιουργεία του αρχείου.")
 
-                export_to_excel(results, filename + ".xlsx")
                                 
                 
         label_filename = tk.Label(content_frame, text="Πληκτολογείστε το όνομα αρχείου Excel (χωρις κατάληξη):")

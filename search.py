@@ -44,4 +44,4 @@ def print_results(results):
 def export_to_excel(results, filename):
     df = pd.DataFrame(results, columns=['ID', 'First Name', 'Last Name', 'Datetime', 'Duration', 'Email'])
     df.to_excel(filename, index=False)
-    print(f"Εξαγωγή σε Excel με όνομα {filename}")
+
