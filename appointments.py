@@ -157,15 +157,6 @@ def appointment_by_id_with_customer_fullname(ap_appointmentid):
     return CURSOR.execute(sql, (ap_appointmentid,)).fetchone()
 
 
-def appointment_search_bydate():
-    """ Placeholder """
-    appointments_list = Appointment.get_table_rows()
-
-
-def appointment_search_bycustomerid():
-    """ Placeholder """
-    appointments_list = Appointment.get_table_rows()
-
 
 def no_appointments():
     """ This method counts the number of rows in the appointments table and returns True it the count is 0"""

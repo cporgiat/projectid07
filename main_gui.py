@@ -4,13 +4,8 @@ if __name__ == '__main__':
     import tkinter as tk
     from datetime import datetime
     from tkcalendar import DateEntry
-    from search import search_by_date, search_by_customer_email, print_results, export_to_excel 
+    from search import search_by_date, search_by_customer_email, export_to_excel
     from tkinter import messagebox ,ttk
-    from utils import get_number
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-    import smtplib
-    from reminder import send_email 
     from reminder import send_reminder
 
     def load_logo(scale_factor=0.5):
@@ -541,7 +536,7 @@ if __name__ == '__main__':
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
-        #selected_appointment = tk.StringVar()
+        selected_appointment = tk.StringVar()
         appointment_cb = ttk.Combobox(content_frame)
 
         appointment_cb['values'] = [appointments_tablerows[m] for m in range(len(appointments_tablerows))]
@@ -557,7 +552,7 @@ if __name__ == '__main__':
         label.pack(fill=tk.X, padx=5, pady=5)
 
         # create a combobox
-        #selected_customer = tk.StringVar()
+        selected_customer = tk.StringVar()
         customer_cb = ttk.Combobox(content_frame)
 
         customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
@@ -840,7 +835,6 @@ if __name__ == '__main__':
           send_button.pack(pady=5)
        else:
           messagebox.showinfo("Καμία εγγραφή", "Δεν βρέθηκαν ραντεβού για την επιλεγμένη ημερομηνία.")
-          clear_content_frame(ResultFrame)
 
       btn_frame = tk.Frame(content_frame)
       btn_frame.configure(bg= "#282830")
@@ -850,9 +844,6 @@ if __name__ == '__main__':
       button_search.grid(row=0,column=0,padx=10)
       cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
       cancel_btn.grid(row=0,column=1)
-
-    def new_file_clicked():
-         print("placeholder")
 
 
     root = tk.Tk()

@@ -54,70 +54,17 @@ def validate_future_datetime(ap_text):
         return False
 
 
-def get_name(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if (validate_input_only_letters(ap_input)):
-            break
-        else:
-            print("Παρακαλω χρησιμοποιηστε μονο Ελληνικους η Λατινικους χαρακτηρες χωρις κενα. Δοκιμαστε παλι.")
-
-    return ap_input
 
 
-def get_number(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if (validate_input_only_numbers(ap_input)):
-            break
-        else:
-            print("Παρακαλω χρησιμοποιηστε μονο αριθμους χωρις κενα. Δοκιμαστε παλι.")
-
-    return ap_input
 
 
-def get_phone(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if (validate_input_only_numbers(ap_input) and len(ap_input)==9):
-            break
-        else:
-            print("Λαθος μορφη τηλεφωνου. Επιτρεπονται μονο 9αψηφιοι θετικοι αριθμοι χωρις κενα. Δοκιμαστε παλι.")
-
-    return ap_input
-
-def get_email(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if (validate_input_email(ap_input)):
-            break
-        else:
-            print(
-                "Λαθος μορφη email. Επιτρεπονται μονο πεζοι Λατινικοι χαρακτηρες, @ και . χωρις κενα. Δοκιμαστε παλι.")
-
-    return ap_input
 
 
-def get_datetime(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if (validate_input_datetime(ap_input)):
-            break
-        else:
-            print("Λαθος μορφη ημερομηνιας. Παρακαλω εισαγετε ημερομηνια στην μορφη ΥΥΥΥ-ΜΜ-DD HH:MI. Δοκιμαστε παλι.")
-
-    return ap_input
 
 
-def get_duration(ap_text):
-    while (True):
-        ap_input = input(ap_text)
-        if ap_input == "":
-            ap_input = '30'
 
-        if (validate_input_only_numbers(ap_input)):
-            break
-        else:
-            print("Παρακαλω χρησιμοποιηστε μονο αριθμους χωρις κενα. Δοκιμαστε παλι.")
 
-    return ap_input
+
+
+
+
