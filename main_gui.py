@@ -72,30 +72,38 @@ if __name__ == '__main__':
             label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχώς.\n" + str(newcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
-        
+        def focus_next_window(event):
+# περναει το focus στο επομενο widget
+            event.widget.tk_focusNext().focus()
+            return ("break")
+
 # φτιάχνω τα widgets του παραθύρου 
         label = ttk.Label(content_frame, text="Όνομα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_firstname = tk.Text(content_frame, height=1, width=10)
+        textbox_firstname.bind("<Tab>", focus_next_window)
         textbox_firstname.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Επώνυμο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_lastname = tk.Text(content_frame, height=1, width=10)
+        textbox_lastname.bind("<Tab>", focus_next_window)
         textbox_lastname.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Τηλέφωνο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_phone = tk.Text(content_frame, height=1, width=10)
+        textbox_phone.bind("<Tab>", focus_next_window)
         textbox_phone.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Email:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_email = tk.Text(content_frame, height=1, width=10)
+        textbox_email.bind("<Tab>", focus_next_window)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
         #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
@@ -188,6 +196,11 @@ if __name__ == '__main__':
             textbox_email.delete("1.0", "end-1c")
             textbox_email.insert("end-1c", tmpcustomer.email)
 
+        def focus_next_window(event):
+            # περναει το focus στο επομενο widget
+            event.widget.tk_focusNext().focus()
+            return ("break")
+
         # Φτιάχνει και τοποθετεί τα widgets του παραθύρου
         label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
@@ -212,24 +225,28 @@ if __name__ == '__main__':
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_firstname = tk.Text(content_frame, height=1, width=10)
+        textbox_firstname.bind("<Tab>", focus_next_window)
         textbox_firstname.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Επώνυμο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_lastname = tk.Text(content_frame, height=1, width=10)
+        textbox_lastname.bind("<Tab>", focus_next_window)
         textbox_lastname.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Τηλέφωνο:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_phone = tk.Text(content_frame, height=1, width=10)
+        textbox_phone.bind("<Tab>", focus_next_window)
         textbox_phone.pack(fill=tk.X, padx=5, pady=5)
 
         label = ttk.Label(content_frame, text="Email:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
         textbox_email = tk.Text(content_frame, height=1, width=10)
+        textbox_email.bind("<Tab>", focus_next_window)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
         #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
@@ -533,6 +550,11 @@ if __name__ == '__main__':
                 counter = counter + 1
 
             duration_cb.current(durationIndex[tmpappointment.duration])
+
+            def focus_next_window(event):
+                # περναει το focus στο επομενο widget
+                event.widget.tk_focusNext().focus()
+                return ("break")
 
        # Φτιάχνει και τοποθετεί τα widgets του παραθύρου
 
