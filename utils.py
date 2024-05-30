@@ -6,7 +6,7 @@ def validate_input_only_letters(ap_text):
     """ This function checks input against a regex expression to validate
     if the string is only upper/lower case greek or latin characters
     and returns true"""
-    if (re.match(r'^[A-Za-zΑ-Ωα-ω]+$', ap_text)):
+    if (re.match(r'^[A-Za-zΑ-Ωα-ωάέίήύό]+$', ap_text)):
         return True
     else:
         return False
