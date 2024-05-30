@@ -5,44 +5,52 @@ if __name__ == '__main__':
     from tkcalendar import DateEntry
     from search import search_by_date, search_by_customer_email, export_to_excel
     from tkinter import messagebox, ttk
-    from reminder import send_reminder
+    from reminder import send_reminder     
+    from customers import Customer, no_customers, delete_appointments_of_customerid
+    from utils import validate_input_email, validate_input_only_letters, validate_input_only_numbers
+    from appointments import Appointment, no_overlapping_appointments, no_appointments, list_appointments_with_customer_fullname, Appointment
 
+#Κάνουμε import τα libraries και τα functions που θα χρησιμοποιηθούν από τα άλλα αρχεία 
 
     def load_logo(scale_factor=0.5):
+    #function για το logo μέσα στο πρόγραμμα
         try:
             logo = tk.PhotoImage(file="assets/logo.png")
             logo = logo.subsample(int(1.5 / scale_factor))  # Κλιμάκωση του λογότυπου
             return logo
+        # Βρίσκει την εικόνα ,την κάνει widget και την κάνει resize στο σωστό μέγεθος 
         except tk.TclError as e:
+        # Σε περιπτώση σφάλματος εμφανίζει error
             messagebox.showerror("Error", f"Failed to load logo: {e}")
             return None
 
 
     def clear_content_frame(frame):
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         for widget in frame.winfo_children():
             widget.destroy()
 
-
+# funcion για να φτιάξεις νέο πελάτη
     def new_customer_clicked(event=None):
+        #Καθαρίζει τα παλιά widgets του frame
         clear_content_frame(content_frame)
-
+        
         def retrieve_input():
-            from customers import Customer
-            from utils import validate_input_email, validate_input_only_letters, validate_input_only_numbers
             ap_firstname = textbox_firstname.get("1.0", "end-1c")
             ap_lastname = textbox_lastname.get("1.0", "end-1c")
             ap_mobile = textbox_phone.get("1.0", "end-1c")
             ap_email = textbox_email.get("1.0", "end-1c")
+            #παίρνω τα δεδομένα από τα πεδία
 
             if (not validate_input_only_letters(ap_firstname)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το όνομα χρησιμοποιήστε μόνο\n "
-                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα και τόνους."
                                                          "Δοκιμαστε παλι.")
                 return
 
             if (not validate_input_only_letters(ap_lastname)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επώνυμο χρησιμοποιήστε μόνο\n"
-                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα και τόνους."
                                                          "Δοκιμαστε παλι.")
                 return
 
@@ -58,12 +66,14 @@ if __name__ == '__main__':
                                                          "Δοκιμαστε παλι.")
                 return
 
+#περνάει τα στοιχεία στα περνάει functions και φτιάχνω τον πελάτη
             newcustomer = Customer.create(ap_firstname, ap_lastname, ap_mobile, ap_email)
             clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Ο πελατης δημιουργηθηκε επιτυχώς.\n" + str(newcustomer))
             label.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
+        
+# φτιάχνω τα widgets του παραθύρου 
         label = ttk.Label(content_frame, text="Όνομα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -88,6 +98,7 @@ if __name__ == '__main__':
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -97,11 +108,14 @@ if __name__ == '__main__':
         cancel_btn = tk.Button(btn_frame, text="Ακύρωση", command=lambda: clear_content_frame(content_frame))
         cancel_btn.grid(row=0, column=1)
 
-
+# funcion για την επεξεργασία πελάτη
     def modify_customer_clicked(event=None):
-        clear_content_frame(content_frame)
+     
+       #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
 
-        from customers import Customer, no_customers
+        clear_content_frame(content_frame)
+        #φέρνει όλους τους πελάτες, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+
         if (no_customers()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
@@ -115,8 +129,9 @@ if __name__ == '__main__':
             customerIDs[counter] = customer.id
             counter = counter + 1
 
+# παίρνει τις αλλαγές από τα αντίστοιχα πεδία 
+
         def retrieve_input():
-            from utils import validate_input_email, validate_input_only_letters, validate_input_only_numbers
             customer_cb_selected_index = customer_cb.current()
             if (customer_cb_selected_index == -1):
                 return
@@ -128,13 +143,13 @@ if __name__ == '__main__':
 
             if (not validate_input_only_letters(ap_firstname)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το όνομα χρησιμοποιήστε μόνο\n "
-                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα και τόνους."
                                                          "Δοκιμαστε παλι.")
                 return
 
             if (not validate_input_only_letters(ap_lastname)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Παρακαλω για το Επώνυμο χρησιμοποιήστε μόνο\n"
-                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα."
+                                                         "Ελληνικους η Λατινικους χαρακτηρες χωρις κενα και τόνους."
                                                          "Δοκιμαστε παλι.")
                 return
 
@@ -150,6 +165,7 @@ if __name__ == '__main__':
                                                          "Δοκιμαστε παλι.")
                 return
 
+#περνάει τα στοιχεία στα αντίστοιχα functions και καθαρίζει το παράθυρο
             tmpcustomer = customers_list[customer_cb_selected_index]
             tmpcustomer.change_firstname(ap_firstname)
             tmpcustomer.change_lastname(ap_lastname)
@@ -160,6 +176,7 @@ if __name__ == '__main__':
             label.pack(fill=tk.X, padx=5, pady=5)
 
         def display_customer_info():
+            #γεμίζει τα πεδία με τα στοιχεία του πελάτη
             customer_cb_selected_index = customer_cb.current()
             tmpcustomer = customers_list[customer_cb_selected_index]
             textbox_firstname.delete("1.0", "end-1c")
@@ -171,25 +188,26 @@ if __name__ == '__main__':
             textbox_email.delete("1.0", "end-1c")
             textbox_email.insert("end-1c", tmpcustomer.email)
 
-        # # label
+        # Φτιάχνει και τοποθετεί τα widgets του παραθύρου
         label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # create a combobox
         selected_customer = tk.StringVar()
+
+        # χρησιμοποιούμε Combobox για να αποτρέψουμε τον χρήστη να κάνει λάθοι
         customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
 
         customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
-        # prevent typing a value
+        
         customer_cb['state'] = 'readonly'
 
-        # place the widget
+        
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
         customer_cb.bind("<<ComboboxSelected>>", lambda _: display_customer_info())
 
-        # label
+       
         label = ttk.Label(content_frame, text="Όνομα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -214,6 +232,7 @@ if __name__ == '__main__':
         textbox_email = tk.Text(content_frame, height=1, width=10)
         textbox_email.pack(fill=tk.X, padx=5, pady=5)
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -225,9 +244,15 @@ if __name__ == '__main__':
 
 
     def delete_customer_clicked(event=None):
+
+   #Function για την διαγραφή χρηστών
+
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
+
         clear_content_frame(content_frame)
 
-        from customers import Customer, no_customers
+        #φέρνει όλους τους πελάτες, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+
         if (no_customers()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
@@ -252,8 +277,8 @@ if __name__ == '__main__':
                 customerIDs[counter] = customer.id
                 counter = counter + 1
 
-            from customers import delete_appointments_of_customerid
-            from appointments import no_appointments
+
+    
             if (not no_appointments()):
                 delete_appointments_of_customerid(customerIDs[customer_cb_selected_index])
             tmpcustomer = customers_list[customer_cb_selected_index]
@@ -264,22 +289,24 @@ if __name__ == '__main__':
                               text="Ο πελατης διαγράφηκε επιτυχώς.\n" + str(customers_list[customer_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
+            #Διαγράφει τους πελάτες και τα ραντεβού τους
+
+        # Φτιάχνει και τοποθετεί τα widgets του παραθύρου
         label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # create a combobox
+# χρησιμοποιούμε Combobox για να αποτρέψουμε τον χρήστη να κάνει λάθοι
+
         selected_customer = tk.StringVar()
         customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
 
         customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
-        # prevent typing a value
         customer_cb['state'] = 'readonly'
 
-        # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -291,9 +318,13 @@ if __name__ == '__main__':
 
 
     def new_appointment_clicked(event=None):
+        # funcion για την δημιουργία πελάτη
+        
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
+
         clear_content_frame(content_frame)
 
-        from customers import Customer, no_customers
+        #φέρνει όλους τους πελάτες, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
         if (no_customers()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν πελάτες στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού πελάτες\Δημιουργία "
@@ -301,13 +332,13 @@ if __name__ == '__main__':
             return
         customers_list = Customer.get_table_rows()
 
+
+
+#περνάει τα στοιχεία στα functions και φτιάχνει το ραντεβού 
         def retrieve_input():
             customer_cb_selected_index = customer_cb.current()
             if (customer_cb_selected_index == -1):
                 return
-
-            from customers import Customer
-            from appointments import Appointment, no_overlapping_appointments
 
             customerIDs = {}
             counter = 0
@@ -318,9 +349,6 @@ if __name__ == '__main__':
             ap_customerid = customerIDs[customer_cb_selected_index]
             ap_datetime = str(cal.get()) + ' ' + str(hour_cb.get()) + ':' + str(minutes_cb.get())
             ap_duration = duration_cb.get()
-            # print(ap_customerid)
-            # print(ap_datetime)
-            # print(ap_duration)
 
             if (not no_overlapping_appointments(ap_datetime, ap_duration)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
@@ -333,23 +361,23 @@ if __name__ == '__main__':
             label = ttk.Label(content_frame, text="Το ραντεβού δημιουργηθηκε επιτυχώς.\n" + str(newappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
+        # φτιάχνω τα widgets του παραθύρου 
+
+        # χρησιμοποιούμε Combobox για να αποτρέψουμε τον χρήστη να κάνει λάθοι
+
         label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
-
-        # create a combobox
+       
         selected_customer = tk.StringVar()
         customer_cb = ttk.Combobox(content_frame, textvariable=selected_customer)
 
         customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
-        # prevent typing a value
         customer_cb['state'] = 'readonly'
 
-        # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
+    
         label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -359,7 +387,6 @@ if __name__ == '__main__':
 
         cal.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε Ώρα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -368,25 +395,19 @@ if __name__ == '__main__':
         hour_cb['values'] = [str(element).rjust(2, '0') for element in hours_list]
 
         hour_cb.current(datetime.now().hour)
-        # prevent typing a value
         hour_cb['state'] = 'readonly'
-        # place the widget
         hour_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         minutes_cb = ttk.Combobox(content_frame)
         minites_int_list = [*range(0, 60)]
         minutes_cb['values'] = [str(element).rjust(2, '0') for element in minites_int_list]
 
         minutes_cb.current(datetime.now().minute)
 
-        # prevent typing a value
         minutes_cb['state'] = 'readonly'
 
-        # place the widget
         minutes_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -397,12 +418,11 @@ if __name__ == '__main__':
 
         duration_cb.current(3)
 
-        # prevent typing a value
         duration_cb['state'] = 'readonly'
 
-        # place the widget
         duration_cb.pack(fill=tk.X, padx=5, pady=5)
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -414,13 +434,15 @@ if __name__ == '__main__':
 
 
     def modify_appointment_clicked(event=None):
+        # funcion για την επεξεργασία ραντεβού
+
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
 
-        from customers import Customer
         customers_list = Customer.get_table_rows()
 
-        from appointments import list_appointments_with_customer_fullname, Appointment, no_overlapping_appointments, \
-            no_appointments
+        #φέρνει όλα τα ραντεβού, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+        
         if (no_appointments()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
@@ -428,6 +450,8 @@ if __name__ == '__main__':
             return
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
+
+#περνάει τα στοιχεία στα functions και επεξεργάζεται το ραντεβού 
 
         def retrieve_input():
             appointment_cb_selected_index = appointment_cb.current()
@@ -449,10 +473,8 @@ if __name__ == '__main__':
             ap_customerid = customerIDs[customer_cb.current()]
             ap_datetime = str(cal.get()) + ' ' + str(hour_cb.get()) + ':' + str(minutes_cb.get())
             ap_duration = duration_cb.get()
-            # print(ap_customerid)
-            # print(ap_datetime)
-            # print(ap_duration)
 
+            # Τυπώνει μήνυμα σε περίπτωση που οι ώρες είναι δεσμευμένες
             if (not no_overlapping_appointments(ap_datetime, ap_duration)):
                 tk.messagebox.showerror("Λαθος Εισοδος", "Ο συνδιασμος ημερομηνιας/ωρας και διαρκειας "
                                                          "\nπου βαλατε ειναι ηδη δεσμευμενος απο αλλο ραντεβού."
@@ -460,15 +482,15 @@ if __name__ == '__main__':
                 return
 
             tmpappointment = appointments_list[appointment_cb_selected_index]
-            # print(tmpappointment)
             tmpappointment.change_customerid(ap_customerid)
             tmpappointment.change_datetime(ap_datetime)
             tmpappointment.change_duration(ap_duration)
-            # print(tmpappointment)
 
             clear_content_frame(content_frame)
             label = ttk.Label(content_frame, text="Το ραντεβού ενημερωθηκε επιτυχώς.\n" + str(tmpappointment))
             label.pack(fill=tk.X, padx=5, pady=5)
+
+        #γεμίζει τα πεδία με τα στοιχεία του πελάτη
 
         def display_appointment_info():
             appointment_cb_selected_index = appointment_cb.current()
@@ -481,11 +503,6 @@ if __name__ == '__main__':
                 counter = counter + 1
 
             ap_customerid = customerIDs[tmpappointment.customerid]
-
-            # print('Customer')
-            # print(ap_customerid)
-            # print(customerIDs)
-            # print('')
 
             customer_cb.current(ap_customerid)
 
@@ -507,12 +524,6 @@ if __name__ == '__main__':
 
             minutes_cb.current(minutesIndex[datetime_obj.minute])
 
-            # print('Date')
-            # print(datetime_obj.date())
-            # print(datetime_obj.hour)
-            # print(datetime_obj.minute)
-            # print('')
-
             cal.set_date(datetime_obj.date())
 
             durationIndex = {}
@@ -521,47 +532,36 @@ if __name__ == '__main__':
                 durationIndex[int(value)] = counter
                 counter = counter + 1
 
-            # print('Duration')
-            # print(durationIndex)
-            # print(tmpappointment.duration)
-            # print(durationIndex[tmpappointment.duration])
-            # print('')
-
             duration_cb.current(durationIndex[tmpappointment.duration])
 
-        # label
+       # Φτιάχνει και τοποθετεί τα widgets του παραθύρου
+
         label = ttk.Label(content_frame, text="Επιλέξτε ρεντεβού:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # create a combobox
+# χρησιμοποιούμε Combobox για να αποτρέψουμε τον χρήστη να κάνει λάθοι
+
         selected_appointment = tk.StringVar()
         appointment_cb = ttk.Combobox(content_frame)
 
         appointment_cb['values'] = [appointments_tablerows[m] for m in range(len(appointments_tablerows))]
 
-        # prevent typing a value
         appointment_cb['state'] = 'readonly'
 
-        # place the widget
         appointment_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε πελάτη:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # create a combobox
         selected_customer = tk.StringVar()
         customer_cb = ttk.Combobox(content_frame)
 
         customer_cb['values'] = [customers_list[m] for m in range(len(customers_list))]
 
-        # prevent typing a value
         customer_cb['state'] = 'readonly'
 
-        # place the widget
         customer_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -571,7 +571,6 @@ if __name__ == '__main__':
 
         cal.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε Ώρα:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -581,25 +580,19 @@ if __name__ == '__main__':
 
         hour_cb.current(datetime.now().hour)
 
-        # prevent typing a value
         hour_cb['state'] = 'readonly'
 
-        # place the widget
         hour_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         minutes_cb = ttk.Combobox(content_frame)
         minites_int_list = [*range(0, 60)]
         minutes_cb['values'] = [str(element).rjust(2, '0') for element in minites_int_list]
         minutes_cb.current(datetime.now().minute)
 
-        # prevent typing a value
         minutes_cb['state'] = 'readonly'
 
-        # place the widget
         minutes_cb.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
         label = ttk.Label(content_frame, text="Επιλέξτε Διάρκεια:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
@@ -610,14 +603,13 @@ if __name__ == '__main__':
 
         duration_cb.current(3)
 
-        # prevent typing a value
         duration_cb['state'] = 'readonly'
 
-        # place the widget
         duration_cb.pack(fill=tk.X, padx=5, pady=5)
 
         appointment_cb.bind("<<ComboboxSelected>>", lambda _: display_appointment_info())
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -629,9 +621,11 @@ if __name__ == '__main__':
 
 
     def delete_appointment_clicked(event=None):
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
 
-        from appointments import list_appointments_with_customer_fullname, Appointment, no_appointments
+        #φέρνει όλα τα ραντεβού, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+      
         if (no_appointments()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
@@ -640,6 +634,8 @@ if __name__ == '__main__':
         appointments_tablerows = list_appointments_with_customer_fullname()
         appointments_list = Appointment.get_table_rows()
         appointmentIDs = {}
+
+#περνάει τα στοιχεία στα functions και διαγράφει το ραντεβού 
 
         def retrieve_input():
             appointment_cb_selected_index = appointment_cb.current()
@@ -664,22 +660,22 @@ if __name__ == '__main__':
                 appointments_list[appointment_cb_selected_index]))
             label.pack(fill=tk.X, padx=5, pady=5)
 
-        # label
+# φτιάχνω τα widgets του παραθύρου 
+
         label = ttk.Label(content_frame, text="Επιλέξτε ρεντεβού:")
         label.pack(fill=tk.X, padx=5, pady=5)
 
-        # create a combobox
+        # χρησιμοποιούμε Combobox για να αποτρέψουμε τον χρήστη να κάνει λάθοι
         selected_appointment = tk.StringVar()
         appointment_cb = ttk.Combobox(content_frame, textvariable=selected_appointment)
 
         appointment_cb['values'] = [appointments_tablerows[m] for m in range(len(appointments_tablerows))]
 
-        # prevent typing a value
         appointment_cb['state'] = 'readonly'
 
-        # place the widget
         appointment_cb.pack(fill=tk.X, padx=5, pady=5)
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -691,23 +687,30 @@ if __name__ == '__main__':
 
 
     def search_by_date_gui():
+        #Function για να ψάξει μέσω ημερομηνιών
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
-        from appointments import no_appointments
+       
+        #φέρνει όλα τα ραντεβού, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+
         if (no_appointments()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
                                                 "για να δημιουργήσετε καινούργια ραντεβού.")
             return
 
+
         def search_and_show_results():
+        #Αναζητάει την ημερομινία και σε περίπτωση που υπάρχουν καλή την show_results_window
             date = cal.get_date()
             if date:
-                # formatted_date = date.strftime('YYYY-MM-DD')
                 results = search_by_date(date)
                 if results:
                     show_results_window(results)
                 else:
                     messagebox.showinfo("No Results", "No results found.")
+
+        # φτιάχνω τα widgets του παραθύρου 
 
         label_date = tk.Label(content_frame, text="Παρακαλω επιλέξτε Ημερομηνία:")
         label_date.pack(padx=5, pady=5)
@@ -723,8 +726,11 @@ if __name__ == '__main__':
     # button_return.pack(pady=5)
 
     def search_by_email_gui():
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
-        from appointments import no_appointments
+    
+        #φέρνει όλα τα ραντεβού, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+      
         if (no_appointments()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
@@ -732,6 +738,7 @@ if __name__ == '__main__':
             return
 
         def search_and_show_results():
+            #Αναζητάει τo email και σε περίπτωση που υπάρχουν καλή την show_results_window
             email = entry_email.get()
             if email:
                 results = search_by_customer_email(email)
@@ -739,6 +746,8 @@ if __name__ == '__main__':
                     show_results_window(results)
                 else:
                     messagebox.showinfo("No Results", "Δεν βρέθηκαν αποτελέσματα.")
+
+        # φτιάχνω τα widgets του παραθύρου 
 
         label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
         label_email.pack(padx=5, pady=5)
@@ -748,14 +757,15 @@ if __name__ == '__main__':
         button_search = tk.Button(content_frame, text="Αναζήτηση", command=search_and_show_results)
         button_search.pack(pady=5)
 
-        # button_return = tk.Button(content_frame, text="Επιστροφή στο Μενού Αναζήτησης", command=lambda: return_to_main_menu(main_menu, content_frame))
-        # button_return.pack(pady=5)
-
 
     def show_results_window(results):
+        #Έμφανίζει τα αποτελέσματα από το search 
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
 
         def export_to_excel_window():
+            #Καλώ function που δημιουργεί excel με τα αποτελέσματα από το search 
+
             nonlocal button_export_excel
             button_export_excel.destroy()
 
@@ -770,12 +780,15 @@ if __name__ == '__main__':
                     except:
                         tk.messagebox.showerror("Προσοχή!", "Παρσουσιάστηκε πρόβλημα κατά την δημιουργεία του αρχείου.")
 
+            # φτιάχνω τα widgets του παραθύρου 
+
             label_filename = tk.Label(content_frame, text="Πληκτολογείστε το όνομα αρχείου Excel (χωρις κατάληξη):")
             label_filename.pack()
 
             entry_filename = tk.Entry(content_frame)
             entry_filename.pack()
 
+            #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
             btn_frame = tk.Frame(content_frame)
             btn_frame.configure(bg="#282830")
             btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -814,17 +827,24 @@ if __name__ == '__main__':
 
 
     def reminder():
+        #Βρίσκει και διαγράφει όλα τα widgets μέσα στο frame που καλούμε
         clear_content_frame(content_frame)
-        from appointments import no_appointments
+
+        #φέρνει όλα τα ραντεβού, ή προβάλλει μύνημα σε περιπτωση όπου δεν υπάρχουν
+   
         if (no_appointments()):
             tk.messagebox.showerror("Προσοχη!", "Δεν υπάρχουν ραντεβού στην βάση!\n"
                                                 "Πηγαίνετε πρώτα στο μενού ραντεβού\Δημιουργία "
                                                 "για να δημιουργήσετε καινούργια ραντεβού.")
             return
+        
+       # φτιάχνω τα widgets του παραθύρου 
+
         label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
         label_email.pack(padx=5, pady=5)
         label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label.pack(fill=tk.X, padx=5, pady=5)
+
 
         entry = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                           width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
@@ -834,8 +854,11 @@ if __name__ == '__main__':
 
         def search_and_display_results():
 
+
             date = entry.get()
             results = search_by_date(date)
+
+            #Εμφανίζω τα ραντεβού που αντιστοιχούν στην ημερομηνία ή τυπώνω μήνυμα σε περίπτωση που δεν υπάρχει 
 
             if results:
                 clear_content_frame(content_frame)
@@ -855,6 +878,7 @@ if __name__ == '__main__':
             else:
                 messagebox.showinfo("Καμία εγγραφή", "Δεν βρέθηκαν ραντεβού για την επιλεγμένη ημερομηνία.")
 
+        #βάζω τα κουτιά σε δικό τους frame και χρησιμοποιώ gride για να τα βάλω το ένα δίπλα στο άλλο
         btn_frame = tk.Frame(content_frame)
         btn_frame.configure(bg="#282830")
         btn_frame.pack(anchor=tk.N, expand=True, side=tk.LEFT)
@@ -865,10 +889,13 @@ if __name__ == '__main__':
         cancel_btn.grid(row=0, column=1)
 
 
+# Φτιάχνω το Παράθυρο και του δίνω όνομα, icon, μέγεθος
     root = tk.Tk()
     root.title("Διαχείρηση ραντεβού - Project07")
     root.geometry("915x650")
     menubar = tk.Menu()
+
+    #Φτιάχνω το menu και περνάω τις σελίδες  
 
     tk_search_by_date = tk.Menu(menubar, tearoff=False)
     tk_search_by_date.add_command(
@@ -940,7 +967,7 @@ if __name__ == '__main__':
     root.iconphoto(True, icon)
     root.title("Διαχείρηση Ραντεβού")
 
-    content_frame = tk.Frame(root, bg="#282830")  # , bg="orange")
+    content_frame = tk.Frame(root, bg="#282830") 
     content_frame.pack(anchor=tk.N, fill=tk.BOTH, expand=True, side=tk.LEFT)
 
     logo_photo = load_logo(scale_factor=0.5)  # Φορτώνουμε το λογότυπο
