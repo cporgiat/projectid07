@@ -736,7 +736,7 @@ if __name__ == '__main__':
 
         label_date = tk.Label(content_frame, text="Παρακαλω επιλέξτε Ημερομηνία:")
         label_date.pack(padx=5, pady=5)
-        cal = DateEntry(content_frame, width=12, background='darkblue', foreground='white', borderwidth=2,
+        cal = DateEntry(content_frame, width=12, borderwidth=2,
                         date_pattern='yyyy-mm-dd')
         cal.pack(fill=tk.X, padx=5, pady=5)
 
@@ -862,11 +862,8 @@ if __name__ == '__main__':
         
        # φτιάχνω τα widgets του παραθύρου 
 
-        label_email = tk.Label(content_frame, text="Παρακαλώ εισάγετε το email του πελάτη:")
+        label_email = tk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
         label_email.pack(padx=5, pady=5)
-        label = ttk.Label(content_frame, text="Επιλέξτε Ημερομηνία:")
-        label.pack(fill=tk.X, padx=5, pady=5)
-
 
         entry = DateEntry(content_frame, locale='en_US', date_pattern='YYYY-mm-dd',
                           width=12, year=datetime.now().year, month=datetime.now().month, day=datetime.now().day,
